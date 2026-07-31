@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap");
 @import "tailwindcss";
 
 @font-face {
@@ -26,6 +27,7 @@
   --muted: #64727c;
   --line: #d8d6cd;
   --gold: #cf9c00;
+  --display-font: "Fraunces", Georgia, serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -645,7 +647,8 @@ html[data-cursor-interactive] .custom-cursor-ring {
   gap: 0 0.3em;
   margin: 0;
   font-size: clamp(3.1rem, 6.1vw, 7.1rem);
-  font-weight: 400;
+  font-family: var(--display-font);
+  font-weight: 500;
   line-height: 0.99;
   letter-spacing: -0.05em;
 }
@@ -874,8 +877,9 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .section-heading h2 {
   margin: 0;
+  font-family: var(--display-font);
   font-size: clamp(2.6rem, 5vw, 5.1rem);
-  font-weight: 450;
+  font-weight: 500;
   line-height: 1.03;
   letter-spacing: -0.045em;
 }
@@ -3350,21 +3354,23 @@ html[data-cursor-interactive] .custom-cursor-ring {
 }
 
 .lp-brand-copy {
-  min-height: 120px;
+  min-height: 148px;
   padding: 1.35rem 1.4rem;
 }
 
 .lp-brand-copy h3 {
   margin: 0 0 0.45rem;
-  font-size: 1.05rem;
-  font-weight: 650;
+  font-family: var(--display-font);
+  font-size: clamp(1.2rem, 1.45vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.15;
 }
 
 .lp-brand-copy p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.55;
+  font-size: clamp(0.94rem, 1vw, 1rem);
+  line-height: 1.6;
 }
 
 .lp-benefits .section-heading {
@@ -3389,7 +3395,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 .lp-benefit-card {
   display: flex;
   gap: 1.3rem;
-  min-height: 205px;
+  min-height: 228px;
   padding: 2rem;
   background: var(--brown);
   transition: background-color 0.35s var(--ease);
@@ -3425,15 +3431,17 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .lp-benefit-card h3 {
   margin: 0 0 0.75rem;
-  font-size: 1.02rem;
+  font-family: var(--display-font);
+  font-size: clamp(1.2rem, 1.45vw, 1.45rem);
   font-weight: 600;
+  line-height: 1.15;
 }
 
 .lp-benefit-card p {
   margin: 0;
   color: rgba(248, 244, 234, 0.62);
-  font-size: 0.82rem;
-  line-height: 1.7;
+  font-size: clamp(0.94rem, 1vw, 1rem);
+  line-height: 1.65;
 }
 
 .lp-offers {
@@ -3490,7 +3498,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .lp-brandline {
   color: #9d7600;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -3498,15 +3506,17 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .lp-offer-body h3 {
   margin: 0.7rem 0;
-  font-size: 1.35rem;
+  font-family: var(--display-font);
+  font-size: clamp(1.4rem, 1.9vw, 1.7rem);
   font-weight: 600;
+  line-height: 1.16;
 }
 
 .lp-offer-body > p {
   flex: 1;
   margin: 0;
   color: var(--muted);
-  font-size: 0.83rem;
+  font-size: clamp(0.94rem, 1vw, 1rem);
   line-height: 1.65;
 }
 
@@ -3707,16 +3717,17 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .lp-blog-body h3 {
   margin: 0.75rem 0;
-  font-size: 1.03rem;
+  font-family: var(--display-font);
+  font-size: clamp(1.25rem, 1.55vw, 1.5rem);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.2;
 }
 
 .lp-blog-body p {
   flex: 1;
   margin: 0 0 1.25rem;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: clamp(0.94rem, 1vw, 1rem);
   line-height: 1.6;
 }
 
@@ -3792,7 +3803,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
   gap: 1.5rem;
   align-items: center;
   justify-content: space-between;
-  min-height: 150px;
+  min-height: 165px;
   border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 1.75rem;
@@ -3807,15 +3818,17 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .lp-store-card h3 {
   margin: 0 0 0.55rem;
-  font-size: 1rem;
-  font-weight: 650;
+  font-family: var(--display-font);
+  font-size: clamp(1.2rem, 1.45vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.15;
 }
 
 .lp-store-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.55;
+  font-size: clamp(0.94rem, 1vw, 1rem);
+  line-height: 1.6;
 }
 
 .lp-store-card > a {
@@ -3862,8 +3875,9 @@ html[data-cursor-interactive] .custom-cursor-ring {
 .lp-final-cta h2 {
   max-width: 880px;
   margin: 0 auto;
+  font-family: var(--display-font);
   font-size: clamp(3rem, 6vw, 6rem);
-  font-weight: 430;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: -0.05em;
 }
