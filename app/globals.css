@@ -16,6 +16,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+}
+
 :root {
   --cream: #f8f4ea;
   --paper: #fbfaf6;
@@ -26,7 +34,7 @@
   --muted: #64727c;
   --line: #d8d6cd;
   --gold: #cf9c00;
-  --display-font: Georgia, "Times New Roman", serif;
+  --display-font: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -55,6 +63,15 @@ input,
 textarea,
 select {
   font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--display-font);
 }
 
 main > section:not(#hero) {
@@ -900,7 +917,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 .grape-watermark {
   position: absolute;
   color: transparent;
-  font-family: Georgia, serif;
+  font-family: var(--display-font);
   font-size: 35rem;
   line-height: 1;
   -webkit-text-stroke: 7px rgba(247, 242, 232, 0.07);
@@ -1303,7 +1320,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 }
 
 .orbit-center span {
-  font-family: Georgia, serif;
+  font-family: var(--display-font);
   font-size: 2rem;
 }
 
@@ -1860,7 +1877,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .quote-mark {
   color: #c4b8aa;
-  font-family: Georgia, serif;
+  font-family: var(--display-font);
   font-size: 4.5rem;
   line-height: 0.65;
 }
@@ -3009,7 +3026,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 
 .grape-watermark {
   color: transparent;
-  font-family: Georgia, serif;
+  font-family: var(--display-font);
   font-size: min(52vw, 40rem);
   -webkit-text-stroke: 6px rgba(207, 156, 0, 0.1);
 }
