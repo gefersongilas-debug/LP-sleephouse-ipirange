@@ -1,6 +1,6 @@
 # Sleep House Ipiranga — Landing Page
 
-Landing page da Sleep House Ipiranga em React/vinext, construída a partir da
+Landing page da Sleep House Ipiranga em React/Vite, construída a partir da
 estrutura estratégica da marca e da linguagem visual e de movimento da LP da
 Grapeclinic.
 
@@ -19,6 +19,12 @@ Abra `http://localhost:3000`.
 npm run build
 npm run lint
 ```
+
+## Publicar na Vercel
+
+Importe o repositório na Vercel. O framework, o comando de build e a pasta de
+saída já estão definidos em `vercel.json`; não há variáveis de ambiente
+obrigatórias.
 
 O projeto inclui:
 

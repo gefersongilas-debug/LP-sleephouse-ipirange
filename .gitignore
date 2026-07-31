@@ -13,10 +13,6 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # misc
 .DS_Store
 *.pem
@@ -33,7 +29,5 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-next-env.d.ts
 /dist/
 /.wrangler/
