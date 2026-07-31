@@ -409,7 +409,9 @@ export default function SleepHouse() {
   const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
   const region = pathname.startsWith("/sao-caetano") ? regionDetails["sao-caetano"] : regionDetails.ipiranga;
   const formVersion = pathname.endsWith("/formulario");
-  const conversionHref = formVersion ? "#contato" : "https://wa.me/5511985608380";
+  const formPage = pathname.endsWith("/formulario/etapas");
+  const formPageHref = `/${region.key}/formulario/etapas`;
+  const conversionHref = formVersion ? formPageHref : "https://wa.me/5511985608380";
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
   const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega no mesmo dia"
     ? { ...benefit, description: `Entrega express para ${region.label} e região, conforme disponibilidade.` }
@@ -442,7 +444,7 @@ export default function SleepHouse() {
     (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
       event: "landing_version_view",
       region: region.key,
-      form_version: formVersion ? "formulario" : "whatsapp",
+      form_version: formVersion || formPage ? "formulario" : "whatsapp",
     });
     const trackWhatsApp = (event: MouseEvent) => {
       const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
@@ -455,7 +457,7 @@ export default function SleepHouse() {
     };
     document.addEventListener("click", trackWhatsApp);
     return () => document.removeEventListener("click", trackWhatsApp);
-  }, [formVersion, region]);
+  }, [formPage, formVersion, region]);
 
   useEffect(() => {
     const introStorageKey = "sleep-house-ipiranga:intro-seen:v1";
@@ -944,6 +946,8 @@ export default function SleepHouse() {
     };
   }, []);
 
+  if (formPage) return <FormPage region={region} />;
+
   return (
     <>
       <a className="skip-link" href="#main-content">
@@ -979,7 +983,7 @@ export default function SleepHouse() {
             <MapPin className="header-icon" strokeWidth={1.8} aria-hidden="true" />
             <HoverFill />
           </a>
-          <a className="header-cta shimmer-button circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+          <a className="header-cta shimmer-button circle-hover" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
             <span>{conversionLabel}</span>
             <HoverFill />
           </a>
@@ -1042,7 +1046,7 @@ export default function SleepHouse() {
         </nav>
         <div className="menu-panel-footer">
           <a href="#lojas">Nossas lojas</a>
-          <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+          <a href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
             {formVersion ? "Encontrar o ideal" : "WhatsApp"}
           </a>
         </div>
@@ -1123,7 +1127,7 @@ export default function SleepHouse() {
                 </div>
               </div>
               <div className="hero-ctas">
-                <a className="button button-light shimmer-button circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+                <a className="button button-light shimmer-button circle-hover" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                   <span className="button-label">
                     {formVersion ? "Encontrar o colchão ideal" : "Falar com um consultor"} <Arrow />
                   </span>
@@ -1242,7 +1246,7 @@ export default function SleepHouse() {
                     </div>
                     <a
                       className="lp-primary-button circle-hover"
-                      href={formVersion ? "#contato" : `https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
+                      href={formVersion ? conversionHref : `https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
                       target={formVersion ? undefined : "_blank"}
                       rel={formVersion ? undefined : "noreferrer"}
                     >
@@ -1308,7 +1312,7 @@ export default function SleepHouse() {
               </div>
               <a
                 className="lp-primary-button circle-hover"
-                href={formVersion ? "#contato" : "https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"}
+                href={formVersion ? conversionHref : "https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"}
                 target={formVersion ? undefined : "_blank"}
                 rel={formVersion ? undefined : "noreferrer"}
               >
@@ -1356,7 +1360,7 @@ export default function SleepHouse() {
                     <p>{address}</p>
                   </div>
                   <a
-                    href={formVersion ? "#contato" : `https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
+                    href={formVersion ? conversionHref : `https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
                     target={formVersion ? undefined : "_blank"}
                     rel={formVersion ? undefined : "noreferrer"}
                   >
@@ -1384,14 +1388,14 @@ export default function SleepHouse() {
                 ? `Responda cinco perguntas e receba uma recomendação para a Sleep House ${region.label}.`
                 : `Fale agora com um consultor Sleep House ${region.label} e compare Pikolin, Tempur, American Sleep e Stearns & Foster sem pagar preço de loja exclusiva.`}
             </p>
-            {formVersion ? <LeadForm region={region} /> : <a
+            <a
               className="lp-primary-button lp-final-button shimmer-button circle-hover"
-              href="https://wa.me/5511985608380?text=Oi!%20Quero%20falar%20com%20um%20consultor%20agora."
-              target="_blank"
-              rel="noreferrer"
+              href={formVersion ? conversionHref : "https://wa.me/5511985608380?text=Oi!%20Quero%20falar%20com%20um%20consultor%20agora."}
+              target={formVersion ? undefined : "_blank"}
+              rel={formVersion ? undefined : "noreferrer"}
             >
-              <span>Falar com um consultor no WhatsApp</span> <Arrow /><HoverFill />
-            </a>}
+              <span>{formVersion ? "Responder o formulário" : "Falar com um consultor no WhatsApp"}</span> <Arrow /><HoverFill />
+            </a>
           </div>
         </section>
       </main>
@@ -1408,7 +1412,7 @@ export default function SleepHouse() {
               </p>
             </div>
             <aside>
-              <a className="footer-cta circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+              <a className="footer-cta circle-hover" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                 <span>
                   <strong>Falar com um consultor</strong>
                   <small>{formVersion ? "Receba sua recomendação" : "Atendimento pelo WhatsApp"}</small>
@@ -1421,7 +1425,7 @@ export default function SleepHouse() {
               <div className="social-links">
                 <a href="#marcas">Marcas</a>
                 <a href="#ofertas">Ofertas</a>
-                <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+                <a href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                   {formVersion ? "Formulário" : "WhatsApp"}
                 </a>
                 <a href={`https://www.google.com/maps/search/${encodeURIComponent(region.mapQuery)}`}>Google</a>
@@ -1469,12 +1473,12 @@ export default function SleepHouse() {
             ↑
           </button>
         ) : null}
-        <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label={formVersion ? "Responder formulário" : "WhatsApp"}>
+        <a href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label={formVersion ? "Responder formulário" : "WhatsApp"}>
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
           </svg>
         </a>
-        <a className="floating-primary" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label="Falar com consultor">
+        <a className="floating-primary" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label="Falar com consultor">
           <i />
           →
         </a>
