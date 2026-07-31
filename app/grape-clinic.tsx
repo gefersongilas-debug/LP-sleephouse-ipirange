@@ -299,7 +299,7 @@ export default function SleepHouse() {
   }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setHeroVideoEnabled(true), 4000);
+    const timer = window.setTimeout(() => setHeroVideoEnabled(true), 1200);
     return () => window.clearTimeout(timer);
   }, []);
 
