@@ -8,7 +8,8 @@
     { "source": "/ipiranga/formulario", "destination": "/index.html" },
     { "source": "/sao-caetano", "destination": "/index.html" },
     { "source": "/sao-caetano/formulario", "destination": "/index.html" },
-    { "source": "/formulario/etapas", "destination": "/index.html" }
+    { "source": "/formulario/etapas", "destination": "/index.html" },
+    { "source": "/obrigado", "destination": "/index.html" }
   ],
   "headers": [
     {

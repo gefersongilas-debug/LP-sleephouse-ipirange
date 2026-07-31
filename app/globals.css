@@ -4107,6 +4107,11 @@ html[data-cursor-interactive] .custom-cursor-ring {
   padding: 2rem;
 }
 
+.thank-you-page {
+  min-height: 100svh;
+  padding: 2rem;
+}
+
 .form-page-logo {
   display: inline-block;
 }
@@ -4134,6 +4139,39 @@ html[data-cursor-interactive] .custom-cursor-ring {
   max-width: 560px;
   margin: 1.3rem auto 0;
   color: rgba(248, 244, 234, 0.7);
+}
+
+.thank-you-content {
+  display: grid;
+  justify-items: center;
+  max-width: 640px;
+  margin: clamp(6rem, 18vh, 12rem) auto 0;
+  text-align: center;
+}
+
+.thank-you-content > span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(207, 156, 0, 0.62);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 2rem;
+}
+
+.thank-you-content h1 {
+  margin: 0;
+  font-size: clamp(3.4rem, 9vw, 6.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.thank-you-content p {
+  max-width: 500px;
+  margin: 1.5rem 0 2rem;
+  color: rgba(248, 244, 234, 0.72);
 }
 
 .lead-form--multistep {

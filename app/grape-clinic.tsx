@@ -266,7 +266,7 @@ const HoverFill = () => <span className="hover-fill" aria-hidden="true" />;
 function MultiStepLeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({ p5: region.label });
   const [step, setStep] = useState(0);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending">("idle");
   const isContactStep = step === formQuestions.length;
   const question = formQuestions[step];
 
@@ -295,15 +295,11 @@ function MultiStepLeadForm({ region }: { region: (typeof regionDetails)[RegionKe
         form_version: "formulario-multistep",
         ...answers,
       });
-      setStatus("sent");
+      window.location.assign(`/obrigado?regiao=${region.key}`);
     } catch {
       setStatus("idle");
     }
   };
-
-  if (status === "sent") {
-    return <div className="lead-form-success"><strong>Recebemos suas respostas.</strong><span>Um consultor da Sleep House vai falar com você pelo WhatsApp.</span></div>;
-  }
 
   return (
     <form className="lead-form lead-form--multistep" onSubmit={submit}>
@@ -377,6 +373,32 @@ function FormPage({
   );
 }
 
+function ThankYouPage({
+  region,
+  cursorDotRef,
+  cursorRingRef,
+}: {
+  region: (typeof regionDetails)[RegionKey];
+  cursorDotRef: React.RefObject<HTMLSpanElement | null>;
+  cursorRingRef: React.RefObject<HTMLSpanElement | null>;
+}) {
+  return (
+    <main className="thank-you-page brown-section">
+      <a className="form-page-logo" href={`/${region.key}`} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
+      <div className="thank-you-content">
+        <span>✓</span>
+        <h1>Obrigado!</h1>
+        <p>Recebemos suas respostas. Um consultor da Sleep House {region.label} vai falar com você pelo WhatsApp.</p>
+        <a className="lp-primary-button" href={`/${region.key}`}>Voltar para o site <Arrow /></a>
+      </div>
+      <div className="custom-cursor" aria-hidden="true">
+        <span ref={cursorDotRef} className="custom-cursor-dot" />
+        <span ref={cursorRingRef} className="custom-cursor-ring" />
+      </div>
+    </main>
+  );
+}
+
 function AnimatedHeading({
   as: Tag = "h2",
   children,
@@ -425,6 +447,7 @@ export default function SleepHouse() {
     : regionDetails.ipiranga;
   const formVersion = pathname.endsWith("/formulario");
   const formPage = pathname === "/formulario/etapas";
+  const thankYouPage = pathname === "/obrigado";
   const formPageHref = `/formulario/etapas?regiao=${region.key}`;
   const conversionHref = formVersion ? formPageHref : "https://wa.me/5511985608380";
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
@@ -459,7 +482,7 @@ export default function SleepHouse() {
     (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
       event: "landing_version_view",
       region: region.key,
-      form_version: formVersion || formPage ? "formulario" : "whatsapp",
+      form_version: thankYouPage ? "obrigado" : formVersion || formPage ? "formulario" : "whatsapp",
     });
     const trackWhatsApp = (event: MouseEvent) => {
       const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
@@ -472,7 +495,7 @@ export default function SleepHouse() {
     };
     document.addEventListener("click", trackWhatsApp);
     return () => document.removeEventListener("click", trackWhatsApp);
-  }, [formPage, formVersion, region]);
+  }, [formPage, formVersion, region, thankYouPage]);
 
   useEffect(() => {
     const introStorageKey = "sleep-house-ipiranga:intro-seen:v1";
@@ -961,6 +984,7 @@ export default function SleepHouse() {
     };
   }, []);
 
+  if (thankYouPage) return <ThankYouPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} region={region} />;
   if (formPage) return <FormPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} region={region} />;
 
   return (
