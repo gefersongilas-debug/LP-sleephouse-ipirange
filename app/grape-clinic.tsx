@@ -1,8 +1,5 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import {
   ArrowUpRight,
   BadgeDollarSign,
@@ -22,7 +19,6 @@ import {
 } from "lucide-react";
 import {
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -41,29 +37,29 @@ const brands = [
   {
     name: "Tempur",
     slug: "tempur",
-    logo: "https://claims.tempur.com/static/tempur.png",
-    image: "/images/sleep-house/produto-tempur.jpg",
+    logo: "/brand/optimized/tempur.webp",
+    image: "/images/sleep-house/optimized/produto-tempur.webp",
     description: "A mesma tecnologia usada pela NASA",
   },
   {
     name: "Pikolin",
     slug: "pikolin",
-    logo: "https://www.pikolin.com/media/logo/stores/1/LOGO_TRANSPARENTE_PIKOLIN.png",
-    image: "/images/sleep-house/produto-pikolin.jpg",
+    logo: "/brand/optimized/pikolin.webp",
+    image: "/images/sleep-house/optimized/produto-pikolin.webp",
     description: "Referência de descanso na Europa",
   },
   {
     name: "Stearns & Foster",
     slug: "stearns-foster",
-    logo: "https://register.stearnsandfoster.com/assets/images/sf-logo-horizontal.png",
-    image: "/images/sleep-house/produto-stearnsfoster.jpg",
+    logo: "/brand/optimized/stearns-foster.webp",
+    image: "/images/sleep-house/optimized/produto-stearnsfoster.webp",
     description: "Luxo americano, autêntico",
   },
   {
     name: "American Sleep",
     slug: "american-sleep",
-    logo: "/brand/logo-american.png",
-    image: "/images/sleep-house/produto-americansleep.jpg",
+    logo: "/brand/optimized/logo-american.webp",
+    image: "/images/sleep-house/optimized/produto-americansleep.webp",
     description: "Conforto premium a um preço justo",
   },
 ];
@@ -106,7 +102,7 @@ const offers = [
     badge: "Tecnologia NASA",
     brand: "Tempur",
     name: "Linha Tempur Adaptável",
-    image: "/images/sleep-house/produto-tempur.jpg",
+    image: "/images/sleep-house/optimized/produto-tempur.webp",
     description: "Espuma viscoelástica que se molda ao seu corpo — indicada para quem sente dor nas costas ao acordar.",
     priceLabel: "a partir de",
     price: "12x R$ 249,90",
@@ -116,7 +112,7 @@ const offers = [
     badge: "Mais procurado",
     brand: "American Sleep",
     name: "Linha Denver Firm",
-    image: "/images/sleep-house/produto-americansleep.jpg",
+    image: "/images/sleep-house/optimized/produto-americansleep.webp",
     description: "Equilíbrio entre firmeza e conforto — a linha de entrada premium mais vendida da loja.",
     priceLabel: "a partir de",
     price: "12x R$ 189,90",
@@ -126,7 +122,7 @@ const offers = [
     badge: "40% off",
     brand: "Pikolin",
     name: "Linha Perfect Sleep",
-    image: "/images/sleep-house/produto-pikolin.jpg",
+    image: "/images/sleep-house/optimized/produto-pikolin.webp",
     description: "A linha europeia mais desejada da loja, com desconto especial neste mês.",
     priceLabel: "Casal",
     price: "40% OFF",
@@ -162,35 +158,35 @@ const blogPosts = [
     tag: "Guia local",
     title: "Onde comprar colchão no Ipiranga: guia completo de lojas, marcas e preços",
     description: "Como comparar loja exclusiva e multimarca e o que testar pessoalmente antes de decidir.",
-    image: "/images/sleep-house/loja-fachada.jpg",
+    image: "/images/sleep-house/optimized/loja-fachada.webp",
     href: "/blog/onde-comprar-colchao-ipiranga.html",
   },
   {
     tag: "Educação sobre sono",
     title: "4 sinais de que está na hora de trocar o colchão",
     description: "Dor ao acordar, colchão afundado e mais de 10 anos de uso: veja os sinais de alerta.",
-    image: "/images/sleep-house/produto-sleephouse-medium.jpeg",
+    image: "/images/sleep-house/optimized/produto-sleephouse-medium.webp",
     href: "/blog/quando-trocar-colchao-sinais.html",
   },
   {
     tag: "Guia local",
     title: "Colchão ortopédico em São Caetano do Sul: como escolher o ideal",
     description: "Firmeza, densidade e suporte real para dor lombar — o que considerar antes de comprar.",
-    image: "/images/sleep-house/produto-americansleep.jpg",
+    image: "/images/sleep-house/optimized/produto-americansleep.webp",
     href: "/blog/colchao-ortopedico-sao-caetano.html",
   },
   {
     tag: "Preço e parcelamento",
     title: "Quanto custa um colchão bom? Preços por categoria e parcelamento",
     description: "Faixas de preço por categoria e como o parcelamento em 12x sem juros muda a decisão.",
-    image: "/images/sleep-house/produto-stearnsfoster.jpg",
+    image: "/images/sleep-house/optimized/produto-stearnsfoster.webp",
     href: "/blog/quanto-custa-colchao-preco-parcelamento.html",
   },
   {
     tag: "Comparação de marcas",
     title: "Tempur, Pikolin, American Sleep ou Stearns & Foster: qual escolher",
     description: "As diferenças reais entre as marcas importadas da loja.",
-    image: "/images/sleep-house/produto-tempur.jpg",
+    image: "/images/sleep-house/optimized/produto-tempur.webp",
     href: "/blog/tempur-pikolin-american-sleep-qual-escolher.html",
   },
 ];
@@ -274,6 +270,7 @@ export default function SleepHouse() {
   const [inHero, setInHero] = useState(true);
   const [contactInView, setContactInView] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [heroVideoEnabled, setHeroVideoEnabled] = useState(false);
   const menuOpenRef = useRef(false);
   const introCurtainRef = useRef<HTMLDivElement>(null);
   const heroMediaRef = useRef<HTMLDivElement>(null);
@@ -290,15 +287,20 @@ export default function SleepHouse() {
     if (shouldPlayIntro) {
       window.sessionStorage.setItem(introStorageKey, "true");
       timers.push(
-        window.setTimeout(() => setIntroPhase("logo-out"), 2550),
-        window.setTimeout(() => setIntroPhase("reveal"), 3450),
-        window.setTimeout(() => setIntroPhase("done"), 4300),
+        window.setTimeout(() => setIntroPhase("logo-out"), 250),
+        window.setTimeout(() => setIntroPhase("reveal"), 380),
+        window.setTimeout(() => setIntroPhase("done"), 550),
       );
     } else {
       timers.push(window.setTimeout(() => setIntroPhase("done"), 0));
     }
 
     return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setHeroVideoEnabled(true), 4000);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -335,8 +337,24 @@ export default function SleepHouse() {
     return () => window.cancelAnimationFrame(frame);
   }, [introPhase]);
 
-  useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+  useEffect(() => {
+    let cancelled = false;
+    let cleanup = () => {};
+    const startMotion = () => {
+      window.removeEventListener("scroll", startMotion);
+      window.removeEventListener("pointerdown", startMotion);
+      window.removeEventListener("keydown", startMotion);
+      void (async () => {
+        const [gsapModule, scrollTriggerModule, lenisModule] = await Promise.all([
+          import("gsap"),
+          import("gsap/ScrollTrigger"),
+          import("lenis"),
+        ]);
+        if (cancelled) return;
+        const gsap = gsapModule.default;
+        const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+        const Lenis = lenisModule.default;
+        gsap.registerPlugin(ScrollTrigger);
 
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -659,7 +677,7 @@ export default function SleepHouse() {
       ScrollTrigger.refresh();
     });
 
-    return () => {
+        cleanup = () => {
       document.removeEventListener("click", onAnchorClick);
       window.removeEventListener("scroll", updateScrollState);
       if (raf) window.cancelAnimationFrame(raf);
@@ -672,6 +690,20 @@ export default function SleepHouse() {
       contactObserver?.disconnect();
       context.revert();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        };
+      })();
+    };
+
+    window.addEventListener("scroll", startMotion, { passive: true, once: true });
+    window.addEventListener("pointerdown", startMotion, { passive: true, once: true });
+    window.addEventListener("keydown", startMotion, { once: true });
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("scroll", startMotion);
+      window.removeEventListener("pointerdown", startMotion);
+      window.removeEventListener("keydown", startMotion);
+      cleanup();
     };
   }, []);
 
@@ -855,22 +887,26 @@ export default function SleepHouse() {
             <div className="hero-media-stage">
               <img
                 className="hero-media"
-                src="/timeline-hero-poster.jpg"
+                src="/timeline-hero-poster.webp"
                 alt=""
                 aria-hidden="true"
+                width="1280"
+                height="720"
+                fetchPriority="high"
+                decoding="async"
               />
-              <video
+              {heroVideoEnabled ? <video
                 className="hero-media hero-video"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="metadata"
-                poster="/timeline-hero-poster.jpg"
+                preload="none"
+                poster="/timeline-hero-poster.webp"
                 aria-hidden="true"
               >
                 <source src="/timeline-hero.web.mp4" type="video/mp4" />
-              </video>
+              </video> : null}
             </div>
             <div className="hero-overlay" />
             <div className="hero-fade" />
@@ -882,7 +918,7 @@ export default function SleepHouse() {
                 {"As melhores marcas de colchão do mundo".split(" ").map((word, index) => (
                   <span
                     className="hero-word"
-                    style={{ animationDelay: `${0.18 + index * 0.14}s` }}
+                    style={{ animationDelay: `${0.06 + index * 0.07}s` }}
                     key={word}
                   >
                     {word}
@@ -969,9 +1005,9 @@ export default function SleepHouse() {
               {brands.map((brand) => (
                 <article className="lp-brand-card" key={brand.name}>
                   <div className="lp-card-media">
-                    <img className="parallax-image" src={brand.image} alt={`${brand.name} em exposição na Sleep House`} />
+                    <img className="parallax-image" src={brand.image} alt={`${brand.name} em exposição na Sleep House`} width="576" height="768" loading="lazy" decoding="async" />
                     <div className={`lp-brand-seal lp-brand-seal--${brand.slug}`}>
-                      <img className="lp-brand-logo" src={brand.logo} alt={`Logo ${brand.name}`} />
+                      <img className="lp-brand-logo" src={brand.logo} alt={`Logo ${brand.name}`} width="128" height="128" loading="lazy" decoding="async" />
                     </div>
                   </div>
                   <div className="lp-brand-copy">
@@ -1016,7 +1052,7 @@ export default function SleepHouse() {
                 <article className="lp-offer-card" key={offer.name}>
                   <div className="lp-card-media">
                     <span className="lp-badge">{offer.badge}</span>
-                    <img className="parallax-image" src={offer.image} alt={`${offer.name} em exposição na loja`} />
+                    <img className="parallax-image" src={offer.image} alt={`${offer.name} em exposição na loja`} width="576" height="768" loading="lazy" decoding="async" />
                   </div>
                   <div className="lp-offer-body">
                     <span className="lp-brandline">{offer.brand}</span>
@@ -1114,7 +1150,7 @@ export default function SleepHouse() {
               {blogPosts.map((post) => (
                 <a className="lp-blog-card" href={post.href} key={post.title}>
                   <div className="lp-blog-media">
-                    <img src={post.image} alt="" />
+                    <img src={post.image} alt="" width="768" height="512" loading="lazy" decoding="async" />
                   </div>
                   <div className="lp-blog-body">
                     <span>{post.tag}</span>
