@@ -263,19 +263,26 @@ const Arrow = ({ left = false }: { left?: boolean }) => (
 
 const HoverFill = () => <span className="hover-fill" aria-hidden="true" />;
 
-function LeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
+function MultiStepLeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({ p5: region.label });
+  const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const isContactStep = step === formQuestions.length;
+  const question = formQuestions[step];
+
+  const selectAnswer = (id: string, option: string) => {
+    setAnswers((current) => ({ ...current, [id]: option }));
+    window.setTimeout(() => setStep((current) => Math.min(current + 1, formQuestions.length)), 180);
+  };
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (formQuestions.some((question) => !answers[question.id])) return;
+    if (!answers.nome || !answers.whatsapp) return;
     setStatus("sending");
-
     const body = new URLSearchParams({
       ...answers,
       cidade: region.label,
-      versao: "formulario",
+      versao: "formulario-multistep",
       pagina: window.location.href,
       enviado_em: new Date().toISOString(),
     });
@@ -285,7 +292,7 @@ function LeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
       (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
         event: "lead_form_submit",
         region: region.key,
-        form_version: "formulario",
+        form_version: "formulario-multistep",
         ...answers,
       });
       setStatus("sent");
@@ -295,12 +302,16 @@ function LeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
   };
 
   if (status === "sent") {
-    return <div className="lead-form-success"><strong>Recebemos suas respostas.</strong><span>Um consultor da Sleep House vai preparar a melhor indicação para você.</span></div>;
+    return <div className="lead-form-success"><strong>Recebemos suas respostas.</strong><span>Um consultor da Sleep House vai falar com você pelo WhatsApp.</span></div>;
   }
 
   return (
-    <form className="lead-form" onSubmit={submit}>
-      {formQuestions.map((question) => (
+    <form className="lead-form lead-form--multistep" onSubmit={submit}>
+      <div className="lead-form-progress" aria-label={`Etapa ${step + 1} de ${formQuestions.length + 1}`}>
+        <span style={{ transform: `scaleX(${(step + 1) / (formQuestions.length + 1)})` }} />
+      </div>
+      <p className="lead-form-step">Etapa {step + 1} de {formQuestions.length + 1}</p>
+      {!isContactStep && question ? (
         <fieldset key={question.id}>
           <legend>{question.label}</legend>
           <div className="lead-form-options">
@@ -311,19 +322,46 @@ function LeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
                   name={question.id}
                   value={option}
                   checked={answers[question.id] === option}
-                  onChange={() => setAnswers((current) => ({ ...current, [question.id]: option }))}
-                  required
+                  onChange={() => selectAnswer(question.id, option)}
                 />
                 <span>{option}</span>
               </label>
             ))}
           </div>
         </fieldset>
-      ))}
-      <button className="lp-primary-button lead-form-submit" disabled={status === "sending"} type="submit">
-        <span>{status === "sending" ? "Enviando..." : "Receber minha recomendação"}</span><Arrow />
-      </button>
+      ) : (
+        <fieldset className="lead-form-contact">
+          <legend>Como podemos falar com você?</legend>
+          <label>Nome
+            <input autoComplete="name" name="nome" onChange={(event) => setAnswers((current) => ({ ...current, nome: event.target.value }))} required type="text" value={answers.nome ?? ""} />
+          </label>
+          <label>WhatsApp
+            <input autoComplete="tel" inputMode="tel" name="whatsapp" onChange={(event) => setAnswers((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="(11) 99999-9999" required type="tel" value={answers.whatsapp ?? ""} />
+          </label>
+          <label>E-mail <small>(opcional)</small>
+            <input autoComplete="email" name="email" onChange={(event) => setAnswers((current) => ({ ...current, email: event.target.value }))} type="email" value={answers.email ?? ""} />
+          </label>
+          <button className="lp-primary-button lead-form-submit" disabled={status === "sending"} type="submit">
+            <span>{status === "sending" ? "Enviando..." : "Receber minha recomendação"}</span><Arrow />
+          </button>
+        </fieldset>
+      )}
+      {step > 0 ? <button className="lead-form-back" onClick={() => setStep((current) => current - 1)} type="button">Voltar</button> : null}
     </form>
+  );
+}
+
+function FormPage({ region }: { region: (typeof regionDetails)[RegionKey] }) {
+  return (
+    <main className="form-page brown-section">
+      <a className="form-page-logo" href={`/${region.key}`} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
+      <div className="form-page-content">
+        <p className="eyebrow">Sleep House {region.label}</p>
+        <h1>Vamos encontrar o colchão ideal para você.</h1>
+        <p>Leva menos de um minuto. Ao final, um consultor entra em contato pelo WhatsApp.</p>
+        <MultiStepLeadForm region={region} />
+      </div>
+    </main>
   );
 }
 
