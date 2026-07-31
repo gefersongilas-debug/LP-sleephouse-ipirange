@@ -351,7 +351,15 @@ function MultiStepLeadForm({ region }: { region: (typeof regionDetails)[RegionKe
   );
 }
 
-function FormPage({ region }: { region: (typeof regionDetails)[RegionKey] }) {
+function FormPage({
+  region,
+  cursorDotRef,
+  cursorRingRef,
+}: {
+  region: (typeof regionDetails)[RegionKey];
+  cursorDotRef: React.RefObject<HTMLSpanElement | null>;
+  cursorRingRef: React.RefObject<HTMLSpanElement | null>;
+}) {
   return (
     <main className="form-page brown-section">
       <a className="form-page-logo" href={`/${region.key}`} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
@@ -360,6 +368,10 @@ function FormPage({ region }: { region: (typeof regionDetails)[RegionKey] }) {
         <h1>Vamos encontrar o colchão ideal para você.</h1>
         <p>Leva menos de um minuto. Ao final, um consultor entra em contato pelo WhatsApp.</p>
         <MultiStepLeadForm region={region} />
+      </div>
+      <div className="custom-cursor" aria-hidden="true">
+        <span ref={cursorDotRef} className="custom-cursor-dot" />
+        <span ref={cursorRingRef} className="custom-cursor-ring" />
       </div>
     </main>
   );
@@ -949,7 +961,7 @@ export default function SleepHouse() {
     };
   }, []);
 
-  if (formPage) return <FormPage region={region} />;
+  if (formPage) return <FormPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} region={region} />;
 
   return (
     <>
