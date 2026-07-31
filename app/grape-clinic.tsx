@@ -42,17 +42,59 @@ const regionDetails = {
     key: "ipiranga" as const,
     label: "Ipiranga",
     location: "Ipiranga, SP",
-    address: "Av. Nazaré, 550 — Ipiranga, São Paulo — SP",
-    mapQuery: "Avenida Nazaré 550 Ipiranga São Paulo",
+    whatsapp: "5511985608380",
+    stores: [
+      {
+        name: "Sleep House Ipiranga",
+        address: "Av. Nazaré, 550 — Ipiranga, São Paulo — SP",
+        mapQuery: "Avenida Nazaré 550 Ipiranga São Paulo",
+      },
+      {
+        name: "Sleep House Nazaré",
+        address: "Av. Nazaré, 1736 — Ipiranga, São Paulo — SP",
+        mapQuery: "Avenida Nazaré 1736 Ipiranga São Paulo",
+      },
+      {
+        name: "Sleep House Santa Cruz",
+        address: "R. Santa Cruz, 2189 — Vila Mariana, São Paulo — SP",
+        mapQuery: "Rua Santa Cruz 2189 Vila Mariana São Paulo",
+      },
+      {
+        name: "Sleep House Vergueiro",
+        address: "R. Vergueiro, 1910 — Paraíso, São Paulo — SP",
+        mapQuery: "Rua Vergueiro 1910 Paraíso São Paulo",
+      },
+      {
+        name: "Sleep House Silva Bueno",
+        address: "R. Silva Bueno, 2533 — Loja 18, São Paulo — SP",
+        mapQuery: "Rua Silva Bueno 2533 Loja 18 São Paulo",
+      },
+    ],
   },
   "sao-caetano": {
     key: "sao-caetano" as const,
     label: "São Caetano",
     location: "São Caetano do Sul, SP",
-    address: "Sleep House São Caetano — Santo Antônio, São Caetano do Sul — SP",
-    mapQuery: "Sleep House São Caetano do Sul",
+    whatsapp: "5511997488296",
+    stores: [
+      {
+        name: "Sleep House São Caetano",
+        address: "Av. Goiás, 436 — Santo Antônio, São Caetano do Sul — SP",
+        mapQuery: "Avenida Goiás 436 Santo Antônio São Caetano do Sul",
+      },
+      {
+        name: "Sleep House Outlet São Caetano",
+        address: "Av. Goiás, 750 — Santo Antônio, São Caetano do Sul — SP",
+        mapQuery: "Avenida Goiás 750 Santo Antônio São Caetano do Sul",
+      },
+    ],
   },
 };
+
+type Region = (typeof regionDetails)[RegionKey];
+
+const whatsappHref = (region: Region, message = `Oi! Quero falar com a Sleep House ${region.label}.`) =>
+  `https://wa.me/${region.whatsapp}?text=${encodeURIComponent(message)}`;
 
 const formQuestions = [
   {
@@ -263,7 +305,13 @@ const Arrow = ({ left = false }: { left?: boolean }) => (
 
 const HoverFill = () => <span className="hover-fill" aria-hidden="true" />;
 
-function MultiStepLeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
+const WhatsAppIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
+  </svg>
+);
+
+function MultiStepLeadForm({ region }: { region: Region }) {
   const [answers, setAnswers] = useState<Record<string, string>>({ p5: region.label });
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending">("idle");
@@ -352,7 +400,7 @@ function FormPage({
   cursorDotRef,
   cursorRingRef,
 }: {
-  region: (typeof regionDetails)[RegionKey];
+  region: Region;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
@@ -365,6 +413,15 @@ function FormPage({
         <p>Leva menos de um minuto. Ao final, um consultor entra em contato pelo WhatsApp.</p>
         <MultiStepLeadForm region={region} />
       </div>
+      <a
+        className="form-page-whatsapp"
+        href={whatsappHref(region, `Oi! Estou preenchendo o formulário da Sleep House ${region.label} e quero falar com um consultor.`)}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Falar no WhatsApp com a Sleep House ${region.label}`}
+      >
+        <WhatsAppIcon />
+      </a>
       <div className="custom-cursor" aria-hidden="true">
         <span ref={cursorDotRef} className="custom-cursor-dot" />
         <span ref={cursorRingRef} className="custom-cursor-ring" />
@@ -378,7 +435,7 @@ function ThankYouPage({
   cursorDotRef,
   cursorRingRef,
 }: {
-  region: (typeof regionDetails)[RegionKey];
+  region: Region;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
@@ -449,7 +506,7 @@ export default function SleepHouse() {
   const formPage = pathname === "/formulario/etapas";
   const thankYouPage = pathname === "/obrigado";
   const formPageHref = `/formulario/etapas?regiao=${region.key}`;
-  const conversionHref = formVersion ? formPageHref : "https://wa.me/5511985608380";
+  const conversionHref = formVersion ? formPageHref : whatsappHref(region);
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
   const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega no mesmo dia"
     ? { ...benefit, description: `Entrega express para ${region.label} e região, conforme disponibilidade.` }
@@ -1285,7 +1342,7 @@ export default function SleepHouse() {
                     </div>
                     <a
                       className="lp-primary-button circle-hover"
-                      href={formVersion ? conversionHref : `https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
+                      href={formVersion ? conversionHref : whatsappHref(region, offer.message)}
                       target={formVersion ? undefined : "_blank"}
                       rel={formVersion ? undefined : "noreferrer"}
                     >
@@ -1351,7 +1408,7 @@ export default function SleepHouse() {
               </div>
               <a
                 className="lp-primary-button circle-hover"
-                href={formVersion ? conversionHref : "https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"}
+                href={formVersion ? conversionHref : whatsappHref(region, "Oi! Acho que está na hora de trocar meu colchão, pode me ajudar a escolher?")}
                 target={formVersion ? undefined : "_blank"}
                 rel={formVersion ? undefined : "noreferrer"}
               >
@@ -1389,17 +1446,17 @@ export default function SleepHouse() {
           <div className="container">
             <SectionTitle
               eyebrow="Visite a loja"
-              title={`Sleep House ${region.label}`}
+              title={`Sleep House em ${region.label}`}
             />
             <div className="lp-stores-grid reveal-stagger">
-              {[[`Sleep House ${region.label}`, region.address, region.label]].map(([name, address, message]) => (
-                <article className="lp-store-card" key={name}>
+              {region.stores.map((store) => (
+                <article className="lp-store-card" key={store.name}>
                   <div>
-                    <h3>{name}</h3>
-                    <p>{address}</p>
+                    <h3>{store.name}</h3>
+                    <p>{store.address}</p>
                   </div>
                   <a
-                    href={formVersion ? conversionHref : `https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
+                    href={formVersion ? conversionHref : whatsappHref(region, `Oi! Quero visitar a ${store.name}.`)}
                     target={formVersion ? undefined : "_blank"}
                     rel={formVersion ? undefined : "noreferrer"}
                   >
@@ -1413,7 +1470,7 @@ export default function SleepHouse() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title={`Mapa Sleep House ${region.label}`}
-                src={`https://www.google.com/maps?q=${encodeURIComponent(region.mapQuery)}&output=embed`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(region.stores[0].mapQuery)}&output=embed`}
               />
             </div>
           </div>
@@ -1429,7 +1486,7 @@ export default function SleepHouse() {
             </p>
             <a
               className="lp-primary-button lp-final-button shimmer-button circle-hover"
-              href={formVersion ? conversionHref : "https://wa.me/5511985608380?text=Oi!%20Quero%20falar%20com%20um%20consultor%20agora."}
+              href={formVersion ? conversionHref : whatsappHref(region, "Oi! Quero falar com um consultor agora.")}
               target={formVersion ? undefined : "_blank"}
               rel={formVersion ? undefined : "noreferrer"}
             >
@@ -1467,7 +1524,7 @@ export default function SleepHouse() {
                 <a href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                   {formVersion ? "Formulário" : "WhatsApp"}
                 </a>
-                <a href={`https://www.google.com/maps/search/${encodeURIComponent(region.mapQuery)}`}>Google</a>
+                <a href={`https://www.google.com/maps/search/${encodeURIComponent(region.stores[0].mapQuery)}`}>Google</a>
               </div>
             </aside>
           </div>
@@ -1482,10 +1539,8 @@ export default function SleepHouse() {
             </nav>
             <address>
               <strong>{region.location}</strong>
-              <p>
-                {region.address}
-              </p>
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(region.mapQuery)}`}>
+              {region.stores.map((store) => <p key={store.name}><strong>{store.name}:</strong> {store.address}</p>)}
+              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(region.stores[0].mapQuery)}`}>
                 ◉ Como chegar &nbsp; <Arrow />
               </a>
             </address>
@@ -1512,10 +1567,8 @@ export default function SleepHouse() {
             ↑
           </button>
         ) : null}
-        <a href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label={formVersion ? "Responder formulário" : "WhatsApp"}>
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
-          </svg>
+        <a href={whatsappHref(region)} target="_blank" rel="noreferrer" aria-label="WhatsApp">
+          <WhatsAppIcon />
         </a>
         <a className="floating-primary" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label="Falar com consultor">
           <i />
