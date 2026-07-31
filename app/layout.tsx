@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Saúde, performance e longevidade em Pouso Alegre",
+  title: "Sleep House Ipiranga | Marcas premium de colchão em São Paulo",
   description:
-    "Clínica de estética, emagrecimento médico e cuidado corporal personalizado em Pouso Alegre, MG.",
+    "Compare Tempur, Pikolin, Stearns & Foster e American Sleep com consultoria especializada, entrega rápida, montagem gratuita e até 12x sem juros.",
   icons: {
-    icon: "/brand/favicon_io/favicon.ico",
+    icon: "/brand/sleep-house/favicon.svg",
   },
 };
 

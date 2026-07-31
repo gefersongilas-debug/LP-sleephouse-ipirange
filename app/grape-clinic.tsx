@@ -1,153 +1,255 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import {
+  ArrowUpRight,
+  BadgeDollarSign,
+  BedDouble,
+  CalendarClock,
+  CreditCard,
+  Hotel,
+  MapPin,
+  Menu,
+  MessageCircle,
+  ScanSearch,
+  Sparkles,
+  Store,
+  Truck,
+  Wrench,
+  X,
+} from "lucide-react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
-const journey = [
+const MOTION = {
+  ease: "power3.out",
+  easeCss: "cubic-bezier(0.22, 1, 0.36, 1)",
+  parallax: {
+    hero: 0.22,
+    narrative: 0.18,
+    card: 0.18,
+  },
+};
+
+const brands = [
   {
-    title: "Diagnóstico",
-    image: "/images/journey/diagnostico.jpg",
-    description:
-      "Histórico, exames e composição corporal para revelar onde o corpo está travado.",
+    name: "Tempur",
+    slug: "tempur",
+    logo: "https://claims.tempur.com/static/tempur.png",
+    image: "/images/sleep-house/produto-tempur.jpg",
+    description: "A mesma tecnologia usada pela NASA",
   },
   {
-    title: "Implementação",
-    image: "/images/journey/implementacao.jpg",
-    description:
-      "Um protocolo individual transforma os dados da avaliação em ações práticas e precisas.",
+    name: "Pikolin",
+    slug: "pikolin",
+    logo: "https://www.pikolin.com/media/logo/stores/1/LOGO_TRANSPARENTE_PIKOLIN.png",
+    image: "/images/sleep-house/produto-pikolin.jpg",
+    description: "Referência de descanso na Europa",
   },
   {
-    title: "Monitoramento",
-    image: "/images/journey/monitoramento.jpg",
-    description:
-      "Acompanhamento próximo para entender respostas, ajustar rotas e sustentar a evolução.",
+    name: "Stearns & Foster",
+    slug: "stearns-foster",
+    logo: "https://register.stearnsandfoster.com/assets/images/sf-logo-horizontal.png",
+    image: "/images/sleep-house/produto-stearnsfoster.jpg",
+    description: "Luxo americano, autêntico",
   },
   {
-    title: "Consolidação",
-    image: "/images/journey/consolidacao.jpg",
-    description:
-      "Resultados consistentes se tornam uma nova base para saúde, energia e longevidade.",
+    name: "American Sleep",
+    slug: "american-sleep",
+    logo: "https://www.innomax.com/wp-content/uploads/2020/06/AmericanSleepColl_Logo-Blue.jpg",
+    image: "/images/sleep-house/produto-americansleep.jpg",
+    description: "Conforto premium a um preço justo",
   },
 ];
 
-const pillars = [
+const benefits = [
   {
-    title: "Hormônio",
-    description:
-      "O equilíbrio hormonal é a base fundamental da vitalidade, do humor, da libido e da composição corporal. Realizamos uma avaliação minuciosa para ajustar cada detalhe, garantindo que todo o seu sistema funcione em harmonia.",
-    icon: "♡",
+    icon: BadgeDollarSign,
+    title: "Menor valor do mercado",
+    description: "As mesmas marcas de lojas exclusivas, com preço de multimarca — sem perder qualidade.",
   },
   {
-    title: "Metabolismo",
-    description:
-      "Investigamos profundamente os fatores que podem estar travando o seu metabolismo e impedindo resultados. A velocidade, a eficiência e a resposta biológica ao tratamento dependem diretamente desta leitura técnica.",
-    icon: "✦",
+    icon: MessageCircle,
+    title: "Consultoria de verdade",
+    description: "Consultores treinados para indicar o colchão certo para seu biotipo e sua necessidade.",
   },
   {
-    title: "Inflamação",
-    description:
-      "A inflamação crônica e silenciosa é a causa oculta por trás do cansaço constante e da dificuldade em emagrecer. Identificamos esses processos e tratamos a causa para evitar o envelhecimento precoce.",
-    icon: "⌁",
+    icon: Truck,
+    title: "Entrega no mesmo dia",
+    description: "Entrega express para Ipiranga, Vila Mariana, Paraíso e região, conforme disponibilidade.",
   },
   {
-    title: "Saúde Muscular",
-    description:
-      "Massa muscular não é apenas estética, mas um pilar para longevidade e autonomia. Monitoramos sua musculatura para garantir metabolismo ativo e envelhecimento saudável.",
-    icon: "⌇",
+    icon: Wrench,
+    title: "Montagem gratuita",
+    description: "Nossa equipe monta tudo na sua casa, sem custo adicional e sem complicação.",
   },
   {
-    title: "Intestino",
-    description:
-      "A saúde intestinal impacta diretamente a imunidade, o humor e a absorção de nutrientes. Uma microbiota equilibrada transforma a resposta a qualquer tratamento.",
-    icon: "◌",
+    icon: CreditCard,
+    title: "12x sem juros",
+    description: "Parcele no cartão sem pagar nada a mais e escolha pelo conforto certo.",
   },
   {
-    title: "Nutrientes",
-    description:
-      "Deficiências nutricionais silenciosas podem comprometer energia, sono e performance cognitiva. Identificamos e corrigimos cada carência com precisão médica.",
-    icon: "☼",
-  },
-  {
-    title: "Estilo de Vida",
-    description:
-      "Sono, estresse e rotina diária moldam a sua biologia. Integramos esses elementos comportamentais ao protocolo individual de forma personalizada.",
-    icon: "◇",
+    icon: Store,
+    title: "Loja física, sem letra miúda",
+    description: "Você vê, sente e testa o colchão antes de decidir — sem surpresa na entrega.",
   },
 ];
 
-const stories = [
-  "Recuperamos a nossa autoestima",
-  "A nossa vida mudou completamente",
-  "A nossa vida mudou completamente",
-  "Nós fomos os primeiros pacientes",
-  "Nós somos outro casal, vivemos melhor",
-  "Nós somos outro casal, vivemos melhor",
-  "O nosso corpo é a base dos nossos sonhos",
-];
-
-const reviews = [
+const offers = [
   {
-    initials: "GJ",
-    name: "Gabi Jorge",
-    quote:
-      "Viajamos 130 km para ser atendidas e valeu cada centímetro. Desde a chegada, o consultório encanta e toda a equipe é super acolhedora.",
+    badge: "Tecnologia NASA",
+    brand: "Tempur",
+    name: "Linha Tempur Adaptável",
+    image: "/images/sleep-house/produto-tempur.jpg",
+    description: "Espuma viscoelástica que se molda ao seu corpo — indicada para quem sente dor nas costas ao acordar.",
+    priceLabel: "a partir de",
+    price: "12x R$ 249,90",
+    message: "Oi! Vi a oferta da linha Tempur no site e quero saber mais.",
   },
   {
-    initials: "JL",
-    name: "João Luiz Lopes",
-    quote:
-      "Atendimento impecável e humano. Toda a equipe transmite segurança e o acompanhamento faz diferença de verdade.",
+    badge: "Mais procurado",
+    brand: "American Sleep",
+    name: "Linha Denver Firm",
+    image: "/images/sleep-house/produto-americansleep.jpg",
+    description: "Equilíbrio entre firmeza e conforto — a linha de entrada premium mais vendida da loja.",
+    priceLabel: "a partir de",
+    price: "12x R$ 189,90",
+    message: "Oi! Vi a oferta da linha American Sleep Denver no site e quero saber mais.",
   },
   {
-    initials: "NK",
-    name: "Nara Kitsidis",
-    quote:
-      "Uma experiência completa, com cuidado em cada detalhe e profissionais que realmente escutam o paciente.",
-  },
-  {
-    initials: "AL",
-    name: "Ana Letícia Bacha",
-    quote:
-      "O espaço é maravilhoso e o atendimento superou minhas expectativas. Me senti acolhida desde o primeiro contato.",
-  },
-  {
-    initials: "JS",
-    name: "Joyce Silva",
-    quote:
-      "Profissionalismo, atenção e carinho. A Grape mudou a maneira como eu cuido da minha saúde.",
+    badge: "40% off",
+    brand: "Pikolin",
+    name: "Linha Perfect Sleep",
+    image: "/images/sleep-house/produto-pikolin.jpg",
+    description: "A linha europeia mais desejada da loja, com desconto especial neste mês.",
+    priceLabel: "Casal",
+    price: "40% OFF",
+    message: "Oi! Vi o desconto da linha Pikolin Perfect Sleep e quero aproveitar.",
   },
 ];
 
-const faqs = [
+const signs = [
   {
-    question: "Em quanto tempo posso perceber mudanças?",
-    answer:
-      "Cada corpo responde de um jeito. Algumas pacientes percebem sinais nas primeiras semanas, mas o tempo depende da avaliação, adesão e resposta individual.",
+    icon: CalendarClock,
+    title: "Já se passaram 10 anos",
+    description: "Esse é o ciclo médio de vida útil de um colchão.",
   },
   {
-    question: "O acompanhamento serve para qualquer pessoa?",
-    answer:
-      "A indicação depende da avaliação inicial. A equipe entende o momento, o histórico e os objetivos antes de orientar o próximo passo.",
+    icon: BedDouble,
+    title: "Dor ao acordar",
+    description: "Você sente dor lombar ou no pescoço, mesmo depois de dormir a noite toda.",
   },
   {
-    question: "Preciso iniciar com exercícios intensos?",
-    answer:
-      "Não. A rotina é construída de forma gradual e individual, respeitando sua condição atual e o que é sustentável para você.",
+    icon: ScanSearch,
+    title: "Marcas visíveis",
+    description: "O colchão afundou ou ficou marcado no formato do corpo.",
   },
   {
-    question: "Preciso seguir uma dieta restritiva?",
-    answer:
-      "O método não parte de soluções genéricas. A estratégia alimentar é personalizada e alinhada à sua realidade.",
+    icon: Hotel,
+    title: "Você dorme melhor fora de casa",
+    description: "Hotéis e outras camas parecem mais confortáveis que a sua própria cama.",
+  },
+];
+
+const blogPosts = [
+  {
+    tag: "Guia local",
+    title: "Onde comprar colchão no Ipiranga: guia completo de lojas, marcas e preços",
+    description: "Como comparar loja exclusiva e multimarca e o que testar pessoalmente antes de decidir.",
+    image: "/images/sleep-house/loja-fachada.jpg",
+    href: "/blog/onde-comprar-colchao-ipiranga.html",
   },
   {
-    question: "Como funciona o acompanhamento?",
-    answer:
-      "Após o diagnóstico, você recebe um plano individual e passa por monitoramentos periódicos para ajustes e consolidação dos resultados.",
+    tag: "Educação sobre sono",
+    title: "4 sinais de que está na hora de trocar o colchão",
+    description: "Dor ao acordar, colchão afundado e mais de 10 anos de uso: veja os sinais de alerta.",
+    image: "/images/sleep-house/produto-sleephouse-medium.jpeg",
+    href: "/blog/quando-trocar-colchao-sinais.html",
+  },
+  {
+    tag: "Guia local",
+    title: "Colchão ortopédico em São Caetano do Sul: como escolher o ideal",
+    description: "Firmeza, densidade e suporte real para dor lombar — o que considerar antes de comprar.",
+    image: "/images/sleep-house/produto-americansleep.jpg",
+    href: "/blog/colchao-ortopedico-sao-caetano.html",
+  },
+  {
+    tag: "Preço e parcelamento",
+    title: "Quanto custa um colchão bom? Preços por categoria e parcelamento",
+    description: "Faixas de preço por categoria e como o parcelamento em 12x sem juros muda a decisão.",
+    image: "/images/sleep-house/produto-stearnsfoster.jpg",
+    href: "/blog/quanto-custa-colchao-preco-parcelamento.html",
+  },
+  {
+    tag: "Comparação de marcas",
+    title: "Tempur, Pikolin, American Sleep ou Stearns & Foster: qual escolher",
+    description: "As diferenças reais entre as marcas importadas da loja.",
+    image: "/images/sleep-house/produto-tempur.jpg",
+    href: "/blog/tempur-pikolin-american-sleep-qual-escolher.html",
+  },
+];
+
+const stores = [
+  ["Sleep House Ipiranga", "Av. Nazaré, 550 — Ipiranga, São Paulo — SP", "Ipiranga"],
+  ["Sleep House Nazaré", "Av. Nazaré, 1736 — Ipiranga, São Paulo — SP", "Nazaré"],
+  ["Sleep House Santa Cruz", "R. Santa Cruz, 2189 — Vila Mariana, São Paulo — SP", "Santa Cruz"],
+  ["Sleep House Vergueiro", "R. Vergueiro, 1910 — Paraíso, São Paulo — SP", "Vergueiro"],
+];
+
+const testimonials = [
+  {
+    author: "Monique Quin",
+    context: "Cliente verificada Sleep House",
+    text: "A Sandra me atendeu com muita paciência e me ajudou a achar o modelo certo para minha necessidade. Produto de qualidade, adoramos!",
+    href: "https://sleephouselp.com.br/",
+  },
+  {
+    author: "Michele Turci",
+    context: "Cliente verificada Sleep House",
+    text: "Atendimento excelente e produtos de qualidade. Me explicaram tudo em detalhes e deram ótimas sugestões. Entrega rápida e perfeita!",
+    href: "https://sleephouses.com.br/",
+  },
+  {
+    author: "Marcelo P.",
+    context: "Avaliação Google · Sleep House Pacaembu",
+    text: "Excelente loja, bom atendimento, entrega rápida, super recomendo. Estou amando meu colchão novo.",
+    href: "https://wanderlog.com/place/details/12647548/sleep-house-colch%C3%B5es--tempur-pacaembu",
   },
 ];
 
 const Arrow = ({ left = false }: { left?: boolean }) => (
-  <span aria-hidden="true">{left ? "←" : "→"}</span>
+  <span className="arrow-icon" aria-hidden="true">
+    <ArrowUpRight strokeWidth={1.8} style={left ? { transform: "rotate(180deg)" } : undefined} />
+  </span>
 );
+
+const HoverFill = () => <span className="hover-fill" aria-hidden="true" />;
+
+function AnimatedHeading({
+  as: Tag = "h2",
+  children,
+  className = "",
+}: {
+  as?: "h1" | "h2" | "h3";
+  children: string;
+  className?: string;
+}) {
+  return (
+    <Tag className={`animated-heading ${className}`} aria-label={children}>
+      {children.split(" ").map((word, index) => (
+        <span className="heading-word" aria-hidden="true" key={`${word}-${index}`}>
+          <span>{word}&nbsp;</span>
+        </span>
+      ))}
+    </Tag>
+  );
+}
 
 function SectionTitle({
   eyebrow,
@@ -163,52 +265,408 @@ function SectionTitle({
   return (
     <div className={`section-heading reveal ${light ? "is-light" : ""}`}>
       <p className="eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
+      <AnimatedHeading>{title}</AnimatedHeading>
       {body ? <p className="section-copy">{body}</p> : null}
     </div>
   );
 }
 
-export default function GrapeClinic() {
-  const [intro, setIntro] = useState(true);
+export default function SleepHouse() {
+  const [introPhase, setIntroPhase] = useState<
+    "loading" | "logo-out" | "reveal" | "done"
+  >("loading");
   const [scrolled, setScrolled] = useState(false);
-  const [journeyIndex, setJourneyIndex] = useState(0);
-  const [pillarIndex, setPillarIndex] = useState(0);
-  const [storyIndex, setStoryIndex] = useState(0);
-  const [reviewIndex, setReviewIndex] = useState(0);
-  const [openFaq, setOpenFaq] = useState(0);
-  const [formStep, setFormStep] = useState(0);
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const [inHero, setInHero] = useState(true);
+  const [contactInView, setContactInView] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuOpenRef = useRef(false);
+  const introCurtainRef = useRef<HTMLDivElement>(null);
+  const heroMediaRef = useRef<HTMLDivElement>(null);
+  const cursorDotRef = useRef<HTMLSpanElement>(null);
+  const cursorRingRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const introTimer = window.setTimeout(() => setIntro(false), 2400);
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const introStorageKey = "sleep-house-ipiranga:intro-seen:v1";
+    const shouldPlayIntro =
+      !window.location.hash &&
+      window.sessionStorage.getItem(introStorageKey) !== "true";
+    const timers: number[] = [];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("revealed");
+    if (shouldPlayIntro) {
+      window.sessionStorage.setItem(introStorageKey, "true");
+      timers.push(
+        window.setTimeout(() => setIntroPhase("logo-out"), 2550),
+        window.setTimeout(() => setIntroPhase("reveal"), 3450),
+        window.setTimeout(() => setIntroPhase("done"), 4300),
+      );
+    } else {
+      timers.push(window.setTimeout(() => setIntroPhase("done"), 0));
+    }
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, []);
+
+  useEffect(() => {
+    if (introPhase !== "reveal") return;
+    const curtain = introCurtainRef.current;
+    if (!curtain) {
+      setIntroPhase("done");
+      return;
+    }
+
+    const x = window.innerWidth / 2;
+    const y = window.innerHeight / 2;
+    const maxRadius = Math.hypot(window.innerWidth, window.innerHeight) * 0.55;
+    const start = performance.now();
+    const duration = 680;
+    let frame = 0;
+
+    const reveal = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      const radius = eased * maxRadius;
+      const mask = `radial-gradient(circle at ${x}px ${y}px, transparent ${radius}px, #000 ${radius}px)`;
+      curtain.style.maskImage = mask;
+      curtain.style.webkitMaskImage = mask;
+
+      if (progress < 1) {
+        frame = window.requestAnimationFrame(reveal);
+      } else {
+        setIntroPhase("done");
+      }
+    };
+
+    frame = window.requestAnimationFrame(reveal);
+    return () => window.cancelAnimationFrame(frame);
+  }, [introPhase]);
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const coarsePointer = window.matchMedia(
+      "(max-width: 1023px), (hover: none) and (pointer: coarse)",
+    ).matches;
+    const lenis = reducedMotion
+      ? null
+      : new Lenis({
+          duration: 1,
+          smoothWheel: true,
+          allowNestedScroll: false,
         });
-      },
-      { threshold: 0.13, rootMargin: "0px 0px -8% 0px" },
-    );
-    document
-      .querySelectorAll(".reveal, .reveal-stagger")
-      .forEach((node) => observer.observe(node));
+    let raf = 0;
+    let hashFrame = 0;
+    let lastScroll = window.scrollY;
+
+    const updateScrollState = () => {
+      const y = lenis?.scroll ?? window.scrollY;
+      const delta = y - lastScroll;
+      const hero = document.getElementById("hero");
+
+      setScrolled(y > 320);
+      setInHero(Boolean(hero && hero.getBoundingClientRect().bottom > 80));
+      if (Math.abs(delta) >= 8) {
+        setHeaderHidden(y > 96 && delta > 0 && !menuOpenRef.current);
+        lastScroll = y;
+      }
+    };
+
+    if (lenis) {
+      const tick = (time: number) => {
+        lenis.raf(time);
+        raf = window.requestAnimationFrame(tick);
+      };
+      lenis.on("scroll", ScrollTrigger.update);
+      lenis.on("scroll", updateScrollState);
+      raf = window.requestAnimationFrame(tick);
+    }
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    updateScrollState();
+
+    const onAnchorClick = (event: MouseEvent) => {
+      const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>(
+        'a[href^="#"]',
+      );
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href) return;
+      event.preventDefault();
+      setMenuOpen(false);
+
+      if (href === "#") {
+        lenis?.scrollTo(0);
+        if (!lenis) window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      const target = document.querySelector<HTMLElement>(href);
+      if (!target) return;
+      if (lenis) {
+        lenis.scrollTo(target, { offset: href === "#contato" ? -96 : -80 });
+      } else {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+      window.history.replaceState(null, "", href);
+    };
+    document.addEventListener("click", onAnchorClick);
+
+    const context = gsap.context(() => {
+      if (!reducedMotion) {
+        const hero = document.getElementById("hero");
+        const media = document.querySelector<HTMLElement>(".hero-media-stage");
+        const fade = document.querySelector<HTMLElement>(".hero-fade");
+        const fixedMedia = heroMediaRef.current;
+
+        if (hero && media && fade && fixedMedia) {
+          const scrollTrigger = {
+            trigger: hero,
+            start: "top top",
+            end: "bottom top",
+            scrub: coarsePointer ? 0.35 : 0.55,
+          };
+
+          gsap.fromTo(
+            media,
+            { scale: 1, scaleX: 1, yPercent: 0 },
+            {
+              scale:
+                1 +
+                MOTION.parallax.hero * (coarsePointer ? 0.85 : 1.55),
+              scaleX: coarsePointer
+                ? 1
+                : 1 + 2.05 * MOTION.parallax.hero,
+              yPercent: coarsePointer ? -4 : -10,
+              ease: "none",
+              scrollTrigger,
+            },
+          );
+          gsap.fromTo(
+            fade,
+            { opacity: 0 },
+            { opacity: 1, ease: "none", scrollTrigger },
+          );
+          ScrollTrigger.create({
+            trigger: hero,
+            start: "bottom top",
+            onLeave: () => {
+              fixedMedia.style.visibility = "hidden";
+            },
+            onEnterBack: () => {
+              fixedMedia.style.visibility = "visible";
+            },
+          });
+        }
+
+        gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
+          const isHeading = element.classList.contains("section-heading");
+          gsap.fromTo(
+            element,
+            { opacity: 0, y: isHeading ? 24 : 16 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: isHeading ? 0.7 : 0.78,
+              ease: MOTION.ease,
+              scrollTrigger: {
+                trigger: element,
+                start: isHeading ? "top 88%" : "top 90%",
+                once: true,
+              },
+            },
+          );
+        });
+
+        gsap.utils
+          .toArray<HTMLElement>(".reveal-stagger")
+          .forEach((container) => {
+            gsap.fromTo(
+              Array.from(container.children),
+              { opacity: 0, y: 16, scale: 0.985 },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.78,
+                stagger: 0.09,
+                ease: MOTION.ease,
+                scrollTrigger: {
+                  trigger: container,
+                  start: "top 90%",
+                  once: true,
+                },
+              },
+            );
+          });
+
+        gsap.utils
+          .toArray<HTMLElement>(".animated-heading")
+          .forEach((heading) => {
+            const words = heading.querySelectorAll(".heading-word > span");
+            gsap.fromTo(
+              words,
+              { opacity: 0, y: 22 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.62,
+                stagger: 0.032,
+                ease: "power4.out",
+                scrollTrigger: {
+                  trigger: heading,
+                  start: "top 90%",
+                  once: true,
+                  fastScrollEnd: true,
+                },
+              },
+            );
+          });
+
+        if (!coarsePointer) {
+          gsap.utils
+            .toArray<HTMLImageElement>(".parallax-image")
+            .forEach((image) => {
+              const trigger = image.parentElement;
+              if (!trigger) return;
+              gsap.fromTo(
+                image,
+                { yPercent: -11 },
+                {
+                  yPercent: 11,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 0.45,
+                  },
+                },
+              );
+            });
+        }
+      } else {
+        gsap.set(
+          ".reveal, .reveal-stagger > *, .animated-heading .heading-word > span",
+          { opacity: 1, y: 0, scale: 1 },
+        );
+      }
+    });
+
+    const contact = document.getElementById("contato");
+    const contactObserver = contact
+      ? new IntersectionObserver(
+          ([entry]) => setContactInView(entry.isIntersecting),
+          { rootMargin: "-18% 0px -18% 0px", threshold: 0.08 },
+        )
+      : null;
+    if (contact && contactObserver) contactObserver.observe(contact);
+
+    hashFrame = window.requestAnimationFrame(() => {
+      if (window.location.hash) {
+        const target = document.querySelector<HTMLElement>(window.location.hash);
+        if (target) {
+          const offset = window.location.hash === "#contato" ? -96 : -80;
+          if (lenis) {
+            lenis.scrollTo(target, { immediate: true, offset });
+          } else {
+            window.scrollTo({
+              top: target.getBoundingClientRect().top + window.scrollY + offset,
+              behavior: "auto",
+            });
+          }
+          gsap.set(
+            target.querySelectorAll(
+              ".reveal, .reveal-stagger > *, .animated-heading .heading-word > span",
+            ),
+            { opacity: 1, y: 0, scale: 1 },
+          );
+          setHeaderHidden(false);
+        }
+      } else {
+        lenis?.scrollTo(0, { immediate: true });
+      }
+      ScrollTrigger.refresh();
+    });
 
     return () => {
-      window.clearTimeout(introTimer);
-      window.removeEventListener("scroll", onScroll);
-      observer.disconnect();
+      document.removeEventListener("click", onAnchorClick);
+      window.removeEventListener("scroll", updateScrollState);
+      if (raf) window.cancelAnimationFrame(raf);
+      if (hashFrame) window.cancelAnimationFrame(hashFrame);
+      if (lenis) {
+        lenis.off("scroll", ScrollTrigger.update);
+        lenis.off("scroll", updateScrollState);
+        lenis.destroy();
+      }
+      contactObserver?.disconnect();
+      context.revert();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 
-  const onFormSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    setFormStep((step) => Math.min(step + 1, 2));
-  };
+  useEffect(() => {
+    menuOpenRef.current = menuOpen;
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const finePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!finePointer || reducedMotion) return;
+
+    const dot = cursorDotRef.current;
+    const ring = cursorRingRef.current;
+    if (!dot || !ring) return;
+    let targetX = -100;
+    let targetY = -100;
+    let dotX = -100;
+    let dotY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let frame = 0;
+
+    const move = (event: PointerEvent) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+      const interactive = Boolean(
+        (event.target as HTMLElement).closest(
+          "a, button, input, textarea, select, [role='button']",
+        ),
+      );
+      document.documentElement.toggleAttribute(
+        "data-cursor-interactive",
+        interactive,
+      );
+    };
+    const leave = () => {
+      targetX = -100;
+      targetY = -100;
+    };
+    const render = () => {
+      dotX += (targetX - dotX) * 0.34;
+      dotY += (targetY - dotY) * 0.34;
+      ringX += (targetX - ringX) * 0.12;
+      ringY += (targetY - ringY) * 0.12;
+      dot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
+      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      frame = window.requestAnimationFrame(render);
+    };
+
+    window.addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("mouseleave", leave);
+    frame = window.requestAnimationFrame(render);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener("mouseleave", leave);
+      document.documentElement.removeAttribute("data-cursor-interactive");
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <>
@@ -216,76 +674,146 @@ export default function GrapeClinic() {
         Pular para o conteúdo principal
       </a>
 
-      <div className={`site-intro ${intro ? "intro-visible" : "intro-hidden"}`}>
-        <div className="intro-mark">G</div>
-        <img src="/brand/grapeclinic-logo-dark.svg" alt="" />
-        <div className="intro-line" />
-      </div>
+      {introPhase !== "done" ? (
+        <div className={`site-intro intro-${introPhase}`} aria-hidden="true">
+          <div ref={introCurtainRef} className="intro-curtain" />
+          {introPhase === "loading" || introPhase === "logo-out" ? (
+            <div className="intro-logo-wrap">
+              <img src="/brand/sleep-house/logo.svg" alt="" />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
-      <header className={`site-header ${scrolled ? "header-scrolled" : ""}`}>
-        <a href="#" className="header-logo" aria-label="Grape Clinic, início">
-          <img
-            src={
-              scrolled
-                ? "/brand/grapeclinic-logo-dark.svg"
-                : "/brand/grapeclinic-logo-light.svg"
-            }
-            alt="Grape Clinic"
-          />
+      <header
+        className={`site-header ${inHero ? "header-hero" : "header-default"} ${
+          headerHidden ? "header-hidden" : ""
+        }`}
+      >
+        <a href="#" className="header-logo" aria-label="Sleep House Ipiranga, início">
+          <img src="/brand/sleep-house/logo.svg" alt="Sleep House" />
         </a>
         <nav className="desktop-nav" aria-label="Navegação principal">
-          <a href="#">Home</a>
-          <a href="#metodo">Método</a>
+          <a className="circle-hover" href="#marcas"><span>Marcas</span><HoverFill /></a>
+          <a className="circle-hover" href="#lojas"><span>Lojas</span><HoverFill /></a>
+          <a className="circle-hover" href="#blog"><span>Blog</span><HoverFill /></a>
         </nav>
         <div className="header-actions">
-          <button className="theme-button" aria-label="Alternar tema">
-            ◔
-          </button>
-          <a className="header-cta" href="#contato">
-            Solicitar avaliação
+          <a className="theme-button circle-hover" href="#lojas" aria-label="Ver nossas lojas">
+            <MapPin className="header-icon" strokeWidth={1.8} aria-hidden="true" />
+            <HoverFill />
+          </a>
+          <a className="header-cta shimmer-button circle-hover" href="#contato">
+            <span>Falar no WhatsApp</span>
+            <HoverFill />
           </a>
           <button
-            className="menu-button"
-            onClick={() => setMenuOpen((value) => !value)}
+            className="menu-button circle-hover"
+            onClick={() => {
+              setHeaderHidden(false);
+              setMenuOpen((value) => !value);
+            }}
             aria-expanded={menuOpen}
+            aria-controls="site-menu"
           >
-            <i /> Menu <i />
+            <Menu className="header-icon" strokeWidth={1.8} aria-hidden="true" />
+            <span>{menuOpen ? "Fechar" : "Menu"}</span>
+            <HoverFill />
           </button>
-        </div>
-        <div className={`menu-panel ${menuOpen ? "menu-open" : ""}`}>
-          <a href="#" onClick={() => setMenuOpen(false)}>
-            Home
-          </a>
-          <a href="#metodo" onClick={() => setMenuOpen(false)}>
-            Método Grape
-          </a>
-          <a href="#contato" onClick={() => setMenuOpen(false)}>
-            Solicitar avaliação
-          </a>
         </div>
       </header>
 
+      <button
+        className={`menu-backdrop ${menuOpen ? "menu-open" : ""}`}
+        aria-label="Fechar menu"
+        tabIndex={menuOpen ? 0 : -1}
+        onClick={() => setMenuOpen(false)}
+      />
+      <div
+        id="site-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!menuOpen}
+        className={`menu-panel ${menuOpen ? "menu-open" : ""}`}
+      >
+        <div className="menu-panel-head">
+          <img
+            src="/brand/sleep-house/logo.svg"
+            alt="Sleep House"
+          />
+          <button className="circle-hover" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
+            <X strokeWidth={1.8} aria-hidden="true" />
+            <HoverFill />
+          </button>
+        </div>
+        <p>Ipiranga · São Paulo, SP</p>
+        <nav>
+          <a className="circle-hover" href="#" onClick={() => setMenuOpen(false)}>
+            <span className="menu-index">01</span><span className="menu-label">Início</span><Arrow /><HoverFill />
+          </a>
+          <a className="circle-hover" href="#marcas" onClick={() => setMenuOpen(false)}>
+            <span className="menu-index">02</span><span className="menu-label">Marcas</span><Arrow /><HoverFill />
+          </a>
+          <a className="circle-hover" href="#ofertas" onClick={() => setMenuOpen(false)}>
+            <span className="menu-index">03</span><span className="menu-label">Ofertas</span><Arrow /><HoverFill />
+          </a>
+          <a className="circle-hover" href="#blog" onClick={() => setMenuOpen(false)}>
+            <span className="menu-index">04</span><span className="menu-label">Blog</span><Arrow /><HoverFill />
+          </a>
+          <a className="circle-hover" href="#contato" onClick={() => setMenuOpen(false)}>
+            <span className="menu-index">05</span><span className="menu-label">Falar com consultor</span><Arrow /><HoverFill />
+          </a>
+        </nav>
+        <div className="menu-panel-footer">
+          <a href="#lojas">Nossas lojas</a>
+          <a href="https://wa.me/5511985608380">
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div className="custom-cursor" aria-hidden="true">
+        <span ref={cursorDotRef} className="custom-cursor-dot" />
+        <span ref={cursorRingRef} className="custom-cursor-ring" />
+      </div>
+
       <main id="main-content">
-        <section className="hero">
-          <video
-            className="hero-media"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/images/hero/foto-da-clinica.jpg"
-          >
-            <source src="/videos/clinic-hero-loop.mp4" type="video/mp4" />
-          </video>
-          <div className="hero-overlay" />
+        <section
+          id="hero"
+          className={`hero ${introPhase === "done" ? "hero-ready" : ""}`}
+        >
+          <div ref={heroMediaRef} className="hero-fixed-media" aria-hidden="true">
+            <div className="hero-media-stage">
+              <img
+                className="hero-media"
+                src="/timeline-hero-poster.jpg"
+                alt=""
+                aria-hidden="true"
+              />
+              <video
+                className="hero-media hero-video"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                poster="/timeline-hero-poster.jpg"
+                aria-hidden="true"
+              >
+                <source src="/timeline-hero.web.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div className="hero-overlay" />
+            <div className="hero-fade" />
+          </div>
           <div className="hero-content">
             <div className="hero-title-wrap">
-              <p className="hero-location">Pouso Alegre, MG</p>
-              <h1 aria-label="Saúde, performance e longevidade">
-                {"Saúde, performance e longevidade".split(" ").map((word, index) => (
+              <p className="hero-location">Multimarca premium · Ipiranga, SP</p>
+              <h1 aria-label="As melhores marcas de colchão do mundo">
+                {"As melhores marcas de colchão do mundo".split(" ").map((word, index) => (
                   <span
                     className="hero-word"
-                    style={{ animationDelay: `${1.35 + index * 0.13}s` }}
+                    style={{ animationDelay: `${0.12 + index * 0.1}s` }}
                     key={word}
                   >
                     {word}
@@ -296,342 +824,106 @@ export default function GrapeClinic() {
             <div className="hero-bottom">
               <div className="hero-stats">
                 <div>
-                  <strong>1000+</strong>
-                  <span>vidas transformadas</span>
+                  <Sparkles className="hero-stat-icon" strokeWidth={1.7} aria-hidden="true" />
+                  <strong>Marcas</strong>
+                  <span>internacionais</span>
                 </div>
                 <div>
-                  <strong>1:1</strong>
-                  <span>avaliação individual</span>
+                  <CreditCard className="hero-stat-icon" strokeWidth={1.7} aria-hidden="true" />
+                  <strong>12x</strong>
+                  <span>sem juros</span>
                 </div>
                 <div>
-                  <strong>MG</strong>
-                  <span>atendimento presencial</span>
+                  <Truck className="hero-stat-icon" strokeWidth={1.7} aria-hidden="true" />
+                  <strong>Hoje</strong>
+                  <span>entrega express*</span>
                 </div>
               </div>
               <div className="hero-ctas">
-                <a className="button button-light" href="#contato">
-                  Solicitar avaliação <Arrow />
-                </a>
-                <a className="button button-ghost" href="#metodo">
-                  Conhecer o método Grape
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="manifesto brown-section">
-          <div className="grape-watermark">G</div>
-          <div className="manifesto-inner reveal">
-            <div className="method-chip">
-              <span>Método Grape</span>
-              <i />
-            </div>
-            <h2>Quando o corpo entra em equilíbrio, tudo muda</h2>
-            <p>
-              Quando o seu corpo entra em equilíbrio hormonal e metabólico, a
-              composição corporal muda de forma natural e sustentável. É assim
-              que trabalhamos na Grape.
-            </p>
-          </div>
-        </section>
-
-        <section className="gallery patterned-section">
-          <div className="container">
-            <SectionTitle
-              eyebrow="Galeria da clínica"
-              title="Um ecossistema de saúde premium"
-            />
-            <div className="gallery-grid reveal-stagger">
-              <figure className="gallery-a">
-                <img
-                  src="/images/spaces/foto-clinica-retrato.jpg"
-                  alt="Recepção ampla da Grape Clinic"
-                />
-              </figure>
-              <figure className="gallery-b">
-                <img
-                  src="/images/spaces/fx-00024.jpg"
-                  alt="Consultório com ambiente acolhedor"
-                />
-              </figure>
-              <figure className="gallery-c">
-                <img
-                  src="/images/spaces/fx-00052.jpg"
-                  alt="Corredor interno da Grape Clinic"
-                />
-              </figure>
-              <figure className="gallery-d">
-                <img
-                  src="/images/spaces/fx-00047.jpg"
-                  alt="Sala de atendimento da Grape Clinic"
-                />
-              </figure>
-            </div>
-          </div>
-        </section>
-
-        <section className="journey-section">
-          <div className="container">
-            <SectionTitle
-              eyebrow="Etapas da Jornada"
-              title="Saúde contínua, inteligente e integrada"
-              body="Acompanhamento contínuo, personalizado e baseado em dados com foco em energia, performance, equilíbrio hormonal e qualidade de vida."
-            />
-            <div className="journey-layout reveal">
-              <article className="journey-card">
-                {journey.map((item, index) => (
-                  <img
-                    key={item.title}
-                    className={journeyIndex === index ? "journey-image active" : "journey-image"}
-                    src={item.image}
-                    alt={`Etapa de ${item.title.toLowerCase()} na jornada Grape`}
-                  />
-                ))}
-                <div className="journey-shade" />
-                <div className="journey-card-copy">
-                  <span>
-                    ETAPA {String(journeyIndex + 1).padStart(2, "0")} ·{" "}
-                    {String(journeyIndex + 1).padStart(2, "0")} DE 04
+                <a className="button button-light shimmer-button circle-hover" href="#contato">
+                  <span className="button-label">
+                    Falar com um consultor <Arrow />
                   </span>
-                  <h3>{journey[journeyIndex].title}</h3>
-                  <p>{journey[journeyIndex].description}</p>
-                </div>
-              </article>
-              <div className="journey-tabs">
-                <div className="journey-tabs-head">
-                  <strong>{journey[journeyIndex].title}</strong>
-                  <span>{String(journeyIndex + 1).padStart(2, "0")} / 04</span>
-                </div>
-                {journey.map((item, index) => (
-                  <button
-                    key={item.title}
-                    className={journeyIndex === index ? "active" : ""}
-                    onClick={() => setJourneyIndex(index)}
-                  >
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <strong>{item.title}</strong>
-                    <i>{journeyIndex === index ? "⊙" : "→"}</i>
-                  </button>
-                ))}
+                  <HoverFill />
+                </a>
+                <a className="button button-ghost circle-hover" href="#ofertas">
+                  <span className="button-label">Ver ofertas ativas</span>
+                  <HoverFill />
+                </a>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="metodo" className="pillars brown-section">
-          <div className="container">
-            <div className="pillars-main reveal">
-              <div className="pillar-copy">
-                <span className="outline-chip">MÉTODO GRAPE</span>
-                <h2>Conheça os 7 pilares de acompanhamento do método</h2>
-                <div className="active-front">
-                  <span>⌁ &nbsp; Frente ativa</span>
-                  <i />
-                  <span>{String(pillarIndex + 1).padStart(2, "0")} / 07</span>
-                </div>
-                <h3>{pillars[pillarIndex].title}</h3>
-                <p>{pillars[pillarIndex].description}</p>
-              </div>
-              <div className="orbit" aria-hidden="true">
-                <div className="orbit-line" />
-                <div className="orbit-center">
-                  <span>G</span>
-                </div>
-                {pillars.map((pillar, index) => (
-                  <div
-                    className={`orbit-node orbit-node-${index + 1} ${
-                      pillarIndex === index ? "active" : ""
-                    }`}
-                    key={pillar.title}
-                  >
-                    {pillar.icon}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="pillar-tabs reveal-stagger">
-              {pillars.map((pillar, index) => (
-                <button
-                  key={pillar.title}
-                  className={pillarIndex === index ? "active" : ""}
-                  onClick={() => setPillarIndex(index)}
+        <section id="prova" className="lp-section lp-testimonials patterned-section">
+          <div className="container lp-testimonials-heading">
+            <SectionTitle
+              eyebrow="Depoimentos de clientes"
+              title="Quem compra com a gente, conta assim"
+              body="Relatos publicados por clientes Sleep House sobre atendimento, escolha e entrega."
+            />
+            <a
+              className="lp-testimonials-source circle-hover reveal"
+              href="https://sleephouses.com.br/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Ver fonte dos depoimentos</span> <Arrow /><HoverFill />
+            </a>
+          </div>
+
+          <div className="lp-testimonials-marquee reveal" aria-label="Depoimentos de clientes Sleep House">
+            <div className="lp-testimonials-track">
+              {[0, 1].map((groupIndex) => (
+                <div
+                  className="lp-testimonials-group"
+                  aria-hidden={groupIndex === 1}
+                  key={groupIndex}
                 >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{pillar.title}</strong>
-                  <i>{pillarIndex === index ? "⊙" : "•"}</i>
-                </button>
+                  {testimonials.map((testimonial) => (
+                    <a
+                      className="lp-testimonial-card"
+                      href={testimonial.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      tabIndex={groupIndex === 1 ? -1 : undefined}
+                      key={`${groupIndex}-${testimonial.author}`}
+                    >
+                      <span className="lp-testimonial-stars" aria-label="5 de 5 estrelas">★★★★★</span>
+                      <blockquote>“{testimonial.text}”</blockquote>
+                      <footer>
+                        <div>
+                          <strong>{testimonial.author}</strong>
+                          <span>{testimonial.context}</span>
+                        </div>
+                        <Arrow />
+                      </footer>
+                    </a>
+                  ))}
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="doctor patterned-section">
-          <div className="container doctor-grid reveal">
-            <figure className="doctor-portrait">
-              <img
-                src="/images/spaces/doutora.jpg"
-                alt="Retrato profissional da Dra. Marcela Ferreira de Oliveira"
-              />
-              <figcaption>
-                <span>Ginecologia e Obstetrícia</span>
-                <small>CRM/MG: 55051 · RQE Nº: 33744 · MENTORA DE MÉDICOS</small>
-              </figcaption>
-            </figure>
-            <article className="doctor-copy brown-section">
-              <h2>Dra. Marcela Ferreira de Oliveira</h2>
-              <span>FUNDADORA DO ECOSSISTEMA GRAPE</span>
-              <p>
-                Médica, <strong>ginecologista e obstetra</strong>. Pós-graduada
-                em <strong>Nutrologia</strong>,{" "}
-                <strong>Nutriendocrinologia</strong> e{" "}
-                <strong>Ciências da Obesidade e Sarcopenia</strong>.
-              </p>
-              <div className="doctor-rule">·</div>
-              <p className="doctor-story">
-                Em <strong>2022</strong>, após minha gestação, enfrentei
-                obesidade no pós-parto — e foi esse momento que deu origem ao{" "}
-                <strong>Método Grape</strong>. Porque emagrecer não bastava: era
-                preciso entender o corpo por inteiro.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section className="stories-section">
+        <section id="marcas" className="lp-section lp-brands patterned-section">
           <div className="container">
             <SectionTitle
-              eyebrow="Histórias reais, vidas transformadas"
-              title="Trajetórias reais e transformações de vida"
-              body="Descubra como o Método Grape impacta a saúde através de seus 7 pilares fundamentais."
+              eyebrow="Exclusividade Sleep House"
+              title="Marcas que você não encontra em qualquer lugar"
             />
-            <div className="stories-layout reveal">
-              <div className="story-list">
-                {stories.map((story, index) => (
-                  <button
-                    className={storyIndex === index ? "active" : ""}
-                    onClick={() => setStoryIndex(index)}
-                    key={`${story}-${index}`}
-                  >
-                    <span>{story}</span>
-                    <b>{String(index + 1).padStart(2, "0")}</b>
-                  </button>
-                ))}
-                <div className="stories-nav">
-                  <span>{String(storyIndex + 1).padStart(2, "0")} / 07</span>
-                  <div>
-                    <button
-                      onClick={() =>
-                        setStoryIndex((index) => (index + stories.length - 1) % stories.length)
-                      }
-                      aria-label="História anterior"
-                    >
-                      <Arrow left />
-                    </button>
-                    <button
-                      onClick={() => setStoryIndex((index) => (index + 1) % stories.length)}
-                      aria-label="Próxima história"
-                    >
-                      <Arrow />
-                    </button>
+            <div className="lp-brands-grid reveal-stagger">
+              {brands.map((brand) => (
+                <article className="lp-brand-card" key={brand.name}>
+                  <div className="lp-card-media">
+                    <img className="parallax-image" src={brand.image} alt={`${brand.name} em exposição na Sleep House`} />
+                    <div className={`lp-brand-seal lp-brand-seal--${brand.slug}`}>
+                      <img className="lp-brand-logo" src={brand.logo} alt={`Logo ${brand.name}`} />
+                    </div>
                   </div>
-                </div>
-              </div>
-              <article className="story-visual">
-                <img src="/images/reels/ivan-isabela.jpg" alt="" />
-                <div className="story-count">{String(storyIndex + 1).padStart(2, "0")} / 07</div>
-                <button className="play-button" aria-label="Reproduzir depoimento">
-                  ▶
-                </button>
-                <h3>{stories[storyIndex]}</h3>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="reviews-section"
-          style={{ backgroundImage: "url('/images/sections/historias-background.jpg')" }}
-        >
-          <div className="reviews-overlay" />
-          <div className="container reviews-content">
-            <div className="reviews-heading reveal">
-              <p className="eyebrow">Avaliações reais no Google</p>
-              <h2>O que quem passou pela Grape conta.</h2>
-              <a
-                href="https://www.google.com/maps/place/Grape+Clinic/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Google &nbsp; ★★★★★ &nbsp; 5,0 · 937 avaliações
-              </a>
-            </div>
-            <div className="reviews-layout reveal">
-              <article className="review-card">
-                <div className="quote-mark">”</div>
-                <blockquote>“{reviews[reviewIndex].quote}”</blockquote>
-                <footer>
-                  <div className="review-avatar">{reviews[reviewIndex].initials}</div>
-                  <div>
-                    <strong>{reviews[reviewIndex].name}</strong>
-                    <span>★★★★★</span>
-                    <small>Avaliação verificada no Google</small>
-                  </div>
-                </footer>
-              </article>
-              <div className="review-list">
-                {reviews.map((review, index) => (
-                  <button
-                    className={reviewIndex === index ? "active" : ""}
-                    onClick={() => setReviewIndex(index)}
-                    key={review.name}
-                  >
-                    <i>{review.initials}</i>
-                    <span>
-                      <strong>{review.name}</strong>
-                      <small>★★★★★</small>
-                    </span>
-                    <b>{String(index + 1).padStart(2, "0")}</b>
-                  </button>
-                ))}
-                <div className="review-nav">
-                  <span>{String(reviewIndex + 1).padStart(2, "0")} / 05</span>
-                  <div>
-                    <button
-                      onClick={() =>
-                        setReviewIndex((index) => (index + reviews.length - 1) % reviews.length)
-                      }
-                    >
-                      <Arrow left />
-                    </button>
-                    <button
-                      onClick={() => setReviewIndex((index) => (index + 1) % reviews.length)}
-                    >
-                      <Arrow />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="faq-section patterned-section">
-          <div className="container faq-layout">
-            <SectionTitle
-              eyebrow="01 / 04"
-              title="Principais dúvidas antes da primeira avaliação."
-              body="Respostas curtas para decidir se faz sentido conversar com a equipe."
-            />
-            <div className="faq-list reveal">
-              {faqs.map((faq, index) => (
-                <article className={openFaq === index ? "open" : ""} key={faq.question}>
-                  <button onClick={() => setOpenFaq(openFaq === index ? -1 : index)}>
-                    <i>{openFaq === index ? "⌃" : "⌄"}</i>
-                    <strong>{faq.question}</strong>
-                  </button>
-                  <div className="faq-answer">
-                    <p>{faq.answer}</p>
+                  <div className="lp-brand-copy">
+                    <h3>{brand.name}</h3>
+                    <p>{brand.description}</p>
                   </div>
                 </article>
               ))}
@@ -639,121 +931,167 @@ export default function GrapeClinic() {
           </div>
         </section>
 
-        <section id="contato" className="contact-section patterned-section">
+        <section id="beneficios" className="lp-section lp-benefits brown-section">
           <div className="container">
-            <div className="contact-panel brown-section reveal">
-              <div className="contact-copy">
-                <p className="eyebrow">Avaliação estratégica</p>
-                <h2>Comece com uma leitura individual do seu momento.</h2>
-                <div>
-                  <p>
-                    As respostas ajudam a equipe a entender se a avaliação faz
-                    sentido para o seu caso e qual próximo passo deve ser indicado.
-                  </p>
-                  <span>03 etapas objetivas · cerca de 2 min para iniciar</span>
-                </div>
-              </div>
-              <form onSubmit={onFormSubmit}>
-                <div className="form-head">
+            <SectionTitle
+              light
+              eyebrow="Por que a Sleep House Ipiranga"
+              title="O acesso a marcas premium, sem o preço de loja exclusiva"
+            />
+            <div className="lp-benefits-grid reveal-stagger">
+              {benefits.map((benefit) => (
+                <article className="lp-benefit-card" key={benefit.title}>
+                  <span className="benefit-icon"><benefit.icon strokeWidth={1.65} aria-hidden="true" /></span>
                   <div>
-                    <span>0{formStep + 1} / 03</span>
-                    <h3>
-                      {formStep === 0
-                        ? "Primeiro contato"
-                        : formStep === 1
-                          ? "Seu objetivo"
-                          : "Últimos detalhes"}
-                    </h3>
-                    <p>
-                      {formStep === 0
-                        ? "Dados básicos para a equipe entender quem deve retornar."
-                        : formStep === 1
-                          ? "Conte qual mudança você deseja construir."
-                          : "Escolha o melhor período para conversarmos."}
-                    </p>
+                    <h3>{benefit.title}</h3>
+                    <p>{benefit.description}</p>
                   </div>
-                  <i>{Math.round(((formStep + 1) / 3) * 100)}%</i>
-                </div>
-                <div className="form-progress">
-                  <span style={{ width: `${((formStep + 1) / 3) * 100}%` }} />
-                </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                <div className="form-fields">
-                  {formStep === 0 ? (
-                    <>
-                      <label>
-                        Nome
-                        <input required placeholder="Seu nome" />
-                      </label>
-                      <label>
-                        WhatsApp
-                        <input required type="tel" placeholder="(00) 00000-0000" />
-                      </label>
-                      <label>
-                        Cidade
-                        <input required placeholder="Onde você mora" />
-                      </label>
-                    </>
-                  ) : formStep === 1 ? (
-                    <>
-                      <label>
-                        Objetivo principal
-                        <select defaultValue="">
-                          <option value="" disabled>
-                            Selecione uma opção
-                          </option>
-                          <option>Emagrecimento</option>
-                          <option>Equilíbrio hormonal</option>
-                          <option>Performance e longevidade</option>
-                        </select>
-                      </label>
-                      <label>
-                        Conte um pouco sobre o seu momento
-                        <textarea placeholder="Sua mensagem" rows={4} />
-                      </label>
-                    </>
-                  ) : (
-                    <>
-                      <label>
-                        Melhor período para contato
-                        <select defaultValue="Manhã">
-                          <option>Manhã</option>
-                          <option>Tarde</option>
-                          <option>Noite</option>
-                        </select>
-                      </label>
-                      <div className="form-success">
-                        Tudo pronto. A equipe Grape pode continuar o atendimento
-                        com você pelo WhatsApp.
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    disabled={formStep === 0}
-                    onClick={() => setFormStep((step) => Math.max(step - 1, 0))}
-                  >
-                    <Arrow left /> Voltar
-                  </button>
-                  {formStep < 2 ? (
-                    <button className="primary" type="submit">
-                      Continuar <Arrow />
-                    </button>
-                  ) : (
+        <section id="ofertas" className="lp-section lp-offers patterned-section">
+          <div className="container">
+            <SectionTitle
+              eyebrow="Ofertas ativas"
+              title="Escolha a linha e fale direto com um consultor"
+            />
+            <div className="lp-offers-grid reveal-stagger">
+              {offers.map((offer) => (
+                <article className="lp-offer-card" key={offer.name}>
+                  <div className="lp-card-media">
+                    <span className="lp-badge">{offer.badge}</span>
+                    <img className="parallax-image" src={offer.image} alt={`${offer.name} em exposição na loja`} />
+                  </div>
+                  <div className="lp-offer-body">
+                    <span className="lp-brandline">{offer.brand}</span>
+                    <h3>{offer.name}</h3>
+                    <p>{offer.description}</p>
+                    <div className="lp-price">
+                      <small>{offer.priceLabel}</small>
+                      <strong>{offer.price}</strong>
+                    </div>
                     <a
-                      className="primary"
-                      href="https://api.whatsapp.com/send?phone=5535991390358"
+                      className="lp-primary-button circle-hover"
+                      href={`https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Falar com a equipe <Arrow />
+                      <span>Quero essa oferta</span> <Arrow /><HoverFill />
                     </a>
-                  )}
-                </div>
-              </form>
+                  </div>
+                </article>
+              ))}
             </div>
+          </div>
+        </section>
+
+        <section id="sinais" className="lp-section lp-learn">
+          <div className="container lp-learn-grid">
+            <figure className="lp-learn-media reveal">
+              <img className="parallax-image" src="/images/sleep-house/produto-sleephouse-medium.jpeg" alt="Detalhe de colchão premium Sleep House" />
+            </figure>
+            <div className="lp-learn-content">
+              <SectionTitle
+                eyebrow="Antes de decidir"
+                title="4 sinais de que seu colchão já passou da hora de troca"
+              />
+              <div className="lp-checklist reveal-stagger">
+                {signs.map((sign) => (
+                  <article key={sign.title}>
+                    <span className="checklist-icon"><sign.icon strokeWidth={1.7} aria-hidden="true" /></span>
+                    <p><strong>{sign.title}</strong> {sign.description}</p>
+                  </article>
+                ))}
+              </div>
+              <a
+                className="lp-primary-button circle-hover reveal"
+                href="https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Quero ajuda para escolher</span> <Arrow /><HoverFill />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section id="blog" className="lp-section lp-blog patterned-section">
+          <div className="container">
+            <SectionTitle
+              eyebrow="Conteúdo · SEO local"
+              title="Aprenda mais antes de decidir"
+            />
+            <div className="lp-blog-grid reveal-stagger">
+              {blogPosts.map((post) => (
+                <a className="lp-blog-card" href={post.href} key={post.title}>
+                  <div className="lp-blog-media">
+                    <img src={post.image} alt="" />
+                  </div>
+                  <div className="lp-blog-body">
+                    <span>{post.tag}</span>
+                    <h3>{post.title}</h3>
+                    <p>{post.description}</p>
+                    <strong>Ler artigo <Arrow /></strong>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="lojas" className="lp-section lp-stores patterned-section">
+          <div className="container">
+            <SectionTitle
+              eyebrow="Visite a loja"
+              title="Sleep House Ipiranga e unidades da região"
+            />
+            <div className="lp-stores-grid reveal-stagger">
+              {stores.map(([name, address, message]) => (
+                <article className="lp-store-card" key={name}>
+                  <div>
+                    <h3>{name}</h3>
+                    <p>{address}</p>
+                  </div>
+                  <a
+                    href={`https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    WhatsApp <Arrow />
+                  </a>
+                </article>
+              ))}
+            </div>
+            <div className="lp-map reveal">
+              <iframe
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mapa Sleep House Ipiranga"
+                src="https://www.google.com/maps?q=Avenida+Nazar%C3%A9+550+Ipiranga+S%C3%A3o+Paulo&output=embed"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section id="contato" className="lp-final-cta brown-section">
+          <div className="container reveal">
+            <AnimatedHeading>Marcas importadas premium, num único atendimento</AnimatedHeading>
+            <p>
+              Fale agora com um consultor Sleep House Ipiranga e compare Pikolin,
+              Tempur, American Sleep e Stearns &amp; Foster sem pagar preço de loja
+              exclusiva — em até 12x sem juros, com entrega no mesmo dia.
+            </p>
+            <a
+              className="lp-primary-button lp-final-button shimmer-button circle-hover"
+              href="https://wa.me/5511985608380?text=Oi!%20Quero%20falar%20com%20um%20consultor%20agora."
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Falar com um consultor no WhatsApp</span> <Arrow /><HoverFill />
+            </a>
           </div>
         </section>
       </main>
@@ -762,32 +1100,31 @@ export default function GrapeClinic() {
         <div className="container">
           <div className="footer-main">
             <div>
-              <img src="/brand/grapeclinic-logo-light.svg" alt="Grape Clinic" />
-              <h2>Uma avaliação individual é o melhor começo.</h2>
+              <img src="/brand/sleep-house/logo.svg" alt="Sleep House" />
+              <h2>O colchão certo muda mais do que a sua noite.</h2>
               <p>
-                A equipe entende seu momento, orienta o próximo passo e indica se
-                a Grape Clinic é o caminho certo para você.
+                Compare marcas internacionais, experimente cada tecnologia e
+                escolha com a orientação de quem entende de sono.
               </p>
             </div>
             <aside>
-              <a className="footer-cta" href="#contato">
+              <a className="footer-cta circle-hover" href="#contato">
                 <span>
-                  <strong>Solicitar avaliação</strong>
-                  <small>Falar com a equipe</small>
+                  <strong>Falar com um consultor</strong>
+                  <small>Atendimento pelo WhatsApp</small>
                 </span>
                 <i>
                   <Arrow />
                 </i>
+                <HoverFill />
               </a>
               <div className="social-links">
-                <a href="https://www.instagram.com/grapeclinic_/">Instagram</a>
-                <a href="https://www.youtube.com/channel/UCjaaFEZQH5Ef8D9g-OJCTfw">
-                  YouTube
-                </a>
-                <a href="https://api.whatsapp.com/send?phone=5535991390358">
+                <a href="#marcas">Marcas</a>
+                <a href="#ofertas">Ofertas</a>
+                <a href="https://wa.me/5511985608380">
                   WhatsApp
                 </a>
-                <a href="https://www.google.com/maps/place/Grape+Clinic/">Google</a>
+                <a href="https://www.google.com/maps/search/Sleep+House+Ipiranga">Google</a>
               </div>
             </aside>
           </div>
@@ -796,16 +1133,16 @@ export default function GrapeClinic() {
               <strong>Navegação</strong>
               <div>
                 <a href="#">Home</a>
-                <a href="#metodo">Método</a>
+                <a href="#marcas">Marcas</a>
+                <a href="#blog">Blog</a>
               </div>
             </nav>
             <address>
-              <strong>Pouso Alegre, MG</strong>
+              <strong>Ipiranga, São Paulo</strong>
               <p>
-                R. Cel. Brito Filho, n°461 - e 469 - Fátima, Pouso Alegre - MG,
-                37554-246
+                Av. Nazaré, 550 — Ipiranga, São Paulo — SP
               </p>
-              <a href="https://www.google.com/maps/dir//R.+Cel.+Brito+Filho">
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Av.+Nazaré,+550,+São+Paulo">
                 ◉ Como chegar &nbsp; <Arrow />
               </a>
             </address>
@@ -813,30 +1150,31 @@ export default function GrapeClinic() {
         </div>
         <div className="footer-legal">
           <div className="container">
-            <span>© 2026 Grape Clinic. Todos os direitos reservados.</span>
+            <span>© 2026 Sleep House Ipiranga. Todos os direitos reservados.</span>
             <span>
-              Dra. Marcela Ferreira de Oliveira
-              <br />
-              CRM/MG: 55051 · RQE Nº: 33744
-              <br />
-              Ginecologia e Obstetrícia
+              Marcas premium · consultoria especializada
+              <br />Entrega express e montagem gratuita em condições selecionadas
             </span>
           </div>
         </div>
       </footer>
 
-      <div className="floating-actions">
+      <div
+        className={`floating-actions ${
+          contactInView ? "floating-actions-hidden" : ""
+        }`}
+      >
         {scrolled ? (
           <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             ↑
           </button>
         ) : null}
-        <a href="https://api.whatsapp.com/send?phone=5535991390358" aria-label="WhatsApp">
-          ◔
+        <a href="https://wa.me/5511985608380" aria-label="WhatsApp">
+          ☎
         </a>
-        <a className="floating-primary" href="#contato" aria-label="Solicitar avaliação">
+        <a className="floating-primary" href="#contato" aria-label="Falar com consultor">
           <i />
-          ✎
+          →
         </a>
       </div>
     </>

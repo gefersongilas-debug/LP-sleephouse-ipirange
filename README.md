@@ -1,7 +1,8 @@
-# Grape Clinic — recriação
+# Sleep House Ipiranga — Landing Page
 
-Recriação da página principal da Grape Clinic em React/vinext, baseada na
-estrutura, nos assets e no comportamento visual da referência pública.
+Landing page da Sleep House Ipiranga em React/vinext, construída a partir da
+estrutura estratégica da marca e da linguagem visual e de movimento da LP da
+Grapeclinic.
 
 ## Rodar localmente
 
@@ -21,11 +22,10 @@ npm run lint
 
 O projeto inclui:
 
-- vídeo e imagem de poster no hero;
+- imagem imersiva com parallax no hero;
 - animação de entrada e reveals acionados por scroll;
-- galeria responsiva;
-- jornadas e pilares interativos;
-- histórias e avaliações em formato de carousel;
-- FAQ com accordion;
-- formulário em três etapas;
+- vitrine responsiva das marcas premium;
+- diferenciais, ofertas e conteúdo educativo;
+- cinco artigos de apoio para SEO local;
+- prova social, unidades, mapa e CTAs para WhatsApp;
 - layout responsivo para desktop e mobile.

@@ -1,5 +1,5 @@
-import GrapeClinic from "./grape-clinic";
+import SleepHouse from "./grape-clinic";
 
 export default function Home() {
-  return <GrapeClinic />;
+  return <SleepHouse />;
 }
