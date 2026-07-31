@@ -882,7 +882,7 @@ export default function SleepHouse() {
                 {"As melhores marcas de colchão do mundo".split(" ").map((word, index) => (
                   <span
                     className="hero-word"
-                    style={{ animationDelay: `${0.12 + index * 0.1}s` }}
+                    style={{ animationDelay: `${0.18 + index * 0.14}s` }}
                     key={word}
                   >
                     {word}
