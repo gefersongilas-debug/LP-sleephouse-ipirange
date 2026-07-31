@@ -270,7 +270,6 @@ export default function SleepHouse() {
   const [inHero, setInHero] = useState(true);
   const [contactInView, setContactInView] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [heroVideoEnabled, setHeroVideoEnabled] = useState(false);
   const menuOpenRef = useRef(false);
   const introCurtainRef = useRef<HTMLDivElement>(null);
   const heroMediaRef = useRef<HTMLDivElement>(null);
@@ -296,11 +295,6 @@ export default function SleepHouse() {
     }
 
     return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, []);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setHeroVideoEnabled(true), 1200);
-    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -895,18 +889,18 @@ export default function SleepHouse() {
                 fetchPriority="high"
                 decoding="async"
               />
-              {heroVideoEnabled ? <video
+              <video
                 className="hero-media hero-video"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="none"
+                preload="auto"
                 poster="/timeline-hero-poster.webp"
                 aria-hidden="true"
               >
                 <source src="/timeline-hero.web.mp4" type="video/mp4" />
-              </video> : null}
+              </video>
             </div>
             <div className="hero-overlay" />
             <div className="hero-fade" />
