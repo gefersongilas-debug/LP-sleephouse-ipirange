@@ -452,7 +452,7 @@ export default function SleepHouse() {
     const y = window.innerHeight / 2;
     const maxRadius = Math.hypot(window.innerWidth, window.innerHeight) * 0.55;
     const start = performance.now();
-    const duration = 680;
+    const duration = 180;
     let frame = 0;
 
     const reveal = (now: number) => {
@@ -1041,6 +1041,9 @@ export default function SleepHouse() {
                 preload="auto"
                 poster="/timeline-hero-poster.webp"
                 aria-hidden="true"
+                onCanPlay={(event) => {
+                  void event.currentTarget.play().catch(() => undefined);
+                }}
               >
                 <source src="/timeline-hero.web.mp4" type="video/mp4" />
               </video>
