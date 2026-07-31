@@ -407,10 +407,13 @@ function SectionTitle({
 
 export default function SleepHouse() {
   const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
-  const region = pathname.startsWith("/sao-caetano") ? regionDetails["sao-caetano"] : regionDetails.ipiranga;
+  const requestedRegion = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("regiao");
+  const region = requestedRegion === "sao-caetano" || pathname.startsWith("/sao-caetano")
+    ? regionDetails["sao-caetano"]
+    : regionDetails.ipiranga;
   const formVersion = pathname.endsWith("/formulario");
-  const formPage = pathname.endsWith("/formulario/etapas");
-  const formPageHref = `/${region.key}/formulario/etapas`;
+  const formPage = pathname === "/formulario/etapas";
+  const formPageHref = `/formulario/etapas?regiao=${region.key}`;
   const conversionHref = formVersion ? formPageHref : "https://wa.me/5511985608380";
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
   const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega no mesmo dia"

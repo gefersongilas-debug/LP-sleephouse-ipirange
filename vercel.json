@@ -6,10 +6,9 @@
   "rewrites": [
     { "source": "/ipiranga", "destination": "/index.html" },
     { "source": "/ipiranga/formulario", "destination": "/index.html" },
-    { "source": "/ipiranga/formulario/etapas", "destination": "/index.html" },
     { "source": "/sao-caetano", "destination": "/index.html" },
     { "source": "/sao-caetano/formulario", "destination": "/index.html" },
-    { "source": "/sao-caetano/formulario/etapas", "destination": "/index.html" }
+    { "source": "/formulario/etapas", "destination": "/index.html" }
   ],
   "headers": [
     {
