@@ -33,6 +33,55 @@ const MOTION = {
   },
 };
 
+const FORM_WEBHOOK = "https://hook.us1.make.celonis.com/unxj1qznxqbeaseq1ms9rb4zxnp2u4vd";
+
+type RegionKey = "ipiranga" | "sao-caetano";
+
+const regionDetails = {
+  ipiranga: {
+    key: "ipiranga" as const,
+    label: "Ipiranga",
+    location: "Ipiranga, SP",
+    address: "Av. Nazaré, 550 — Ipiranga, São Paulo — SP",
+    mapQuery: "Avenida Nazaré 550 Ipiranga São Paulo",
+  },
+  "sao-caetano": {
+    key: "sao-caetano" as const,
+    label: "São Caetano",
+    location: "São Caetano do Sul, SP",
+    address: "Sleep House São Caetano — Santo Antônio, São Caetano do Sul — SP",
+    mapQuery: "Sleep House São Caetano do Sul",
+  },
+};
+
+const formQuestions = [
+  {
+    id: "p1",
+    label: "O que você está buscando?",
+    options: ["Colchão", "Cama box ou Box baú", "Travesseiro", "Capa/protetor de colchão"],
+  },
+  {
+    id: "p2",
+    label: "Qual o tamanho do colchão que você busca?",
+    options: ["King", "Queen", "Casal", "Solteiro", "Medida especial"],
+  },
+  {
+    id: "p3",
+    label: "Qual sua preferência de firmeza/conforto?",
+    options: ["Macio", "Intermediário", "Firme / Ortopédico", "Quero ajuda do vendedor"],
+  },
+  {
+    id: "p4",
+    label: "Para quando é a compra?",
+    options: ["O mais rápido possível", "Este mês", "Nos próximos 3 meses", "Apenas pesquisando preços"],
+  },
+  {
+    id: "p5",
+    label: "Qual loja fica mais perto de você?",
+    options: ["Ipiranga", "São Caetano"],
+  },
+] as const;
+
 const brands = [
   {
     name: "Tempur",
@@ -191,13 +240,6 @@ const blogPosts = [
   },
 ];
 
-const stores = [
-  ["Sleep House Ipiranga", "Av. Nazaré, 550 — Ipiranga, São Paulo — SP", "Ipiranga"],
-  ["Sleep House Nazaré", "Av. Nazaré, 1736 — Ipiranga, São Paulo — SP", "Nazaré"],
-  ["Sleep House Santa Cruz", "R. Santa Cruz, 2189 — Vila Mariana, São Paulo — SP", "Santa Cruz"],
-  ["Sleep House Vergueiro", "R. Vergueiro, 1910 — Paraíso, São Paulo — SP", "Vergueiro"],
-];
-
 const testimonials = [
   {
     author: "Monique Quin",
@@ -220,6 +262,70 @@ const Arrow = ({ left = false }: { left?: boolean }) => (
 );
 
 const HoverFill = () => <span className="hover-fill" aria-hidden="true" />;
+
+function LeadForm({ region }: { region: (typeof regionDetails)[RegionKey] }) {
+  const [answers, setAnswers] = useState<Record<string, string>>({ p5: region.label });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (formQuestions.some((question) => !answers[question.id])) return;
+    setStatus("sending");
+
+    const body = new URLSearchParams({
+      ...answers,
+      cidade: region.label,
+      versao: "formulario",
+      pagina: window.location.href,
+      enviado_em: new Date().toISOString(),
+    });
+
+    try {
+      await fetch(FORM_WEBHOOK, { method: "POST", mode: "no-cors", body });
+      (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
+        event: "lead_form_submit",
+        region: region.key,
+        form_version: "formulario",
+        ...answers,
+      });
+      setStatus("sent");
+    } catch {
+      setStatus("idle");
+    }
+  };
+
+  if (status === "sent") {
+    return <div className="lead-form-success"><strong>Recebemos suas respostas.</strong><span>Um consultor da Sleep House vai preparar a melhor indicação para você.</span></div>;
+  }
+
+  return (
+    <form className="lead-form" onSubmit={submit}>
+      {formQuestions.map((question) => (
+        <fieldset key={question.id}>
+          <legend>{question.label}</legend>
+          <div className="lead-form-options">
+            {question.options.map((option) => (
+              <label className={answers[question.id] === option ? "is-selected" : ""} key={option}>
+                <input
+                  type="radio"
+                  name={question.id}
+                  value={option}
+                  checked={answers[question.id] === option}
+                  onChange={() => setAnswers((current) => ({ ...current, [question.id]: option }))}
+                  required
+                />
+                <span>{option}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+      <button className="lp-primary-button lead-form-submit" disabled={status === "sending"} type="submit">
+        <span>{status === "sending" ? "Enviando..." : "Receber minha recomendação"}</span><Arrow />
+      </button>
+    </form>
+  );
+}
 
 function AnimatedHeading({
   as: Tag = "h2",
@@ -262,6 +368,14 @@ function SectionTitle({
 }
 
 export default function SleepHouse() {
+  const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
+  const region = pathname.startsWith("/sao-caetano") ? regionDetails["sao-caetano"] : regionDetails.ipiranga;
+  const formVersion = pathname.endsWith("/formulario");
+  const conversionHref = formVersion ? "#contato" : "https://wa.me/5511985608380";
+  const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
+  const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega no mesmo dia"
+    ? { ...benefit, description: `Entrega express para ${region.label} e região, conforme disponibilidade.` }
+    : benefit);
   const [introPhase, setIntroPhase] = useState<
     "loading" | "logo-out" | "reveal" | "done"
   >("loading");
@@ -275,6 +389,35 @@ export default function SleepHouse() {
   const heroMediaRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLSpanElement>(null);
   const cursorRingRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    document.title = `Sleep House ${region.label} | Marcas premium de colchão`;
+    document.querySelector('meta[name="description"]')?.setAttribute(
+      "content",
+      `Compare marcas premium de colchão com consultoria especializada na Sleep House ${region.label}.`,
+    );
+    document.querySelector('meta[property="og:title"]')?.setAttribute(
+      "content",
+      `Sleep House ${region.label} | Marcas premium de colchão`,
+    );
+    document.querySelector('link[rel="canonical"]')?.setAttribute("href", window.location.href);
+    (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
+      event: "landing_version_view",
+      region: region.key,
+      form_version: formVersion ? "formulario" : "whatsapp",
+    });
+    const trackWhatsApp = (event: MouseEvent) => {
+      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
+      if (!link) return;
+      (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
+        event: "whatsapp_click",
+        region: region.key,
+        form_version: "whatsapp",
+      });
+    };
+    document.addEventListener("click", trackWhatsApp);
+    return () => document.removeEventListener("click", trackWhatsApp);
+  }, [formVersion, region]);
 
   useEffect(() => {
     const introStorageKey = "sleep-house-ipiranga:intro-seen:v1";
@@ -785,7 +928,7 @@ export default function SleepHouse() {
           headerHidden ? "header-hidden" : ""
         }`}
       >
-        <a href="#" className="header-logo" aria-label="Sleep House Ipiranga, início">
+        <a href="#" className="header-logo" aria-label={`Sleep House ${region.label}, início`}>
           <img src="/brand/sleep-house/logo.svg" alt="Sleep House" />
         </a>
         <nav className="desktop-nav" aria-label="Navegação principal">
@@ -798,8 +941,8 @@ export default function SleepHouse() {
             <MapPin className="header-icon" strokeWidth={1.8} aria-hidden="true" />
             <HoverFill />
           </a>
-          <a className="header-cta shimmer-button circle-hover" href="#contato">
-            <span>Falar no WhatsApp</span>
+          <a className="header-cta shimmer-button circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+            <span>{conversionLabel}</span>
             <HoverFill />
           </a>
           <button
@@ -841,7 +984,7 @@ export default function SleepHouse() {
             <HoverFill />
           </button>
         </div>
-        <p>Ipiranga · São Paulo, SP</p>
+        <p>{region.location}</p>
         <nav>
           <a className="circle-hover" href="#" onClick={() => setMenuOpen(false)}>
             <span className="menu-index">01</span><span className="menu-label">Início</span><Arrow /><HoverFill />
@@ -861,8 +1004,8 @@ export default function SleepHouse() {
         </nav>
         <div className="menu-panel-footer">
           <a href="#lojas">Nossas lojas</a>
-          <a href="https://wa.me/5511985608380">
-            WhatsApp
+          <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+            {formVersion ? "Encontrar o ideal" : "WhatsApp"}
           </a>
         </div>
       </div>
@@ -907,7 +1050,7 @@ export default function SleepHouse() {
           </div>
           <div className="hero-content">
             <div className="hero-title-wrap">
-              <p className="hero-location">Multimarca premium · Ipiranga, SP</p>
+              <p className="hero-location">Multimarca premium · {region.location}</p>
               <h1 aria-label="As melhores marcas de colchão do mundo">
                 {"As melhores marcas de colchão do mundo".split(" ").map((word, index) => (
                   <span
@@ -939,9 +1082,9 @@ export default function SleepHouse() {
                 </div>
               </div>
               <div className="hero-ctas">
-                <a className="button button-light shimmer-button circle-hover" href="#contato">
+                <a className="button button-light shimmer-button circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                   <span className="button-label">
-                    Falar com um consultor <Arrow />
+                    {formVersion ? "Encontrar o colchão ideal" : "Falar com um consultor"} <Arrow />
                   </span>
                   <HoverFill />
                 </a>
@@ -1018,11 +1161,11 @@ export default function SleepHouse() {
           <div className="container">
             <SectionTitle
               light
-              eyebrow="Por que a Sleep House Ipiranga"
+              eyebrow={`Por que a Sleep House ${region.label}`}
               title="O acesso a marcas premium, sem o preço de loja exclusiva"
             />
             <div className="lp-benefits-grid reveal-stagger">
-              {benefits.map((benefit) => (
+              {regionalBenefits.map((benefit) => (
                 <article className="lp-benefit-card" key={benefit.title}>
                   <span className="benefit-icon"><benefit.icon strokeWidth={1.65} aria-hidden="true" /></span>
                   <div>
@@ -1058,11 +1201,11 @@ export default function SleepHouse() {
                     </div>
                     <a
                       className="lp-primary-button circle-hover"
-                      href={`https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
-                      target="_blank"
-                      rel="noreferrer"
+                      href={formVersion ? "#contato" : `https://wa.me/5511985608380?text=${encodeURIComponent(offer.message)}`}
+                      target={formVersion ? undefined : "_blank"}
+                      rel={formVersion ? undefined : "noreferrer"}
                     >
-                      <span>Quero essa oferta</span> <Arrow /><HoverFill />
+                      <span>{formVersion ? "Quero uma recomendação" : "Quero essa oferta"}</span> <Arrow /><HoverFill />
                     </a>
                   </div>
                 </article>
@@ -1124,11 +1267,11 @@ export default function SleepHouse() {
               </div>
               <a
                 className="lp-primary-button circle-hover"
-                href="https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"
-                target="_blank"
-                rel="noreferrer"
+                href={formVersion ? "#contato" : "https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"}
+                target={formVersion ? undefined : "_blank"}
+                rel={formVersion ? undefined : "noreferrer"}
               >
-                <span>Quero ajuda para escolher</span> <Arrow /><HoverFill />
+                <span>{formVersion ? "Responder o formulário" : "Quero ajuda para escolher"}</span> <Arrow /><HoverFill />
               </a>
             </div>
           </div>
@@ -1162,21 +1305,21 @@ export default function SleepHouse() {
           <div className="container">
             <SectionTitle
               eyebrow="Visite a loja"
-              title="Sleep House Ipiranga e unidades da região"
+              title={`Sleep House ${region.label}`}
             />
             <div className="lp-stores-grid reveal-stagger">
-              {stores.map(([name, address, message]) => (
+              {[[`Sleep House ${region.label}`, region.address, region.label]].map(([name, address, message]) => (
                 <article className="lp-store-card" key={name}>
                   <div>
                     <h3>{name}</h3>
                     <p>{address}</p>
                   </div>
                   <a
-                    href={`https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={formVersion ? "#contato" : `https://wa.me/5511985608380?text=${encodeURIComponent(`Oi! Quero visitar a loja Sleep House ${message}.`)}`}
+                    target={formVersion ? undefined : "_blank"}
+                    rel={formVersion ? undefined : "noreferrer"}
                   >
-                    WhatsApp <Arrow />
+                    {formVersion ? "Quero uma recomendação" : "WhatsApp"} <Arrow />
                   </a>
                 </article>
               ))}
@@ -1185,8 +1328,8 @@ export default function SleepHouse() {
               <iframe
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Mapa Sleep House Ipiranga"
-                src="https://www.google.com/maps?q=Avenida+Nazar%C3%A9+550+Ipiranga+S%C3%A3o+Paulo&output=embed"
+                title={`Mapa Sleep House ${region.label}`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(region.mapQuery)}&output=embed`}
               />
             </div>
           </div>
@@ -1196,18 +1339,18 @@ export default function SleepHouse() {
           <div className="container reveal">
             <AnimatedHeading>Marcas importadas premium, num único atendimento</AnimatedHeading>
             <p>
-              Fale agora com um consultor Sleep House Ipiranga e compare Pikolin,
-              Tempur, American Sleep e Stearns &amp; Foster sem pagar preço de loja
-              exclusiva — em até 12x sem juros, com entrega no mesmo dia.
+              {formVersion
+                ? `Responda cinco perguntas e receba uma recomendação para a Sleep House ${region.label}.`
+                : `Fale agora com um consultor Sleep House ${region.label} e compare Pikolin, Tempur, American Sleep e Stearns & Foster sem pagar preço de loja exclusiva.`}
             </p>
-            <a
+            {formVersion ? <LeadForm region={region} /> : <a
               className="lp-primary-button lp-final-button shimmer-button circle-hover"
               href="https://wa.me/5511985608380?text=Oi!%20Quero%20falar%20com%20um%20consultor%20agora."
               target="_blank"
               rel="noreferrer"
             >
               <span>Falar com um consultor no WhatsApp</span> <Arrow /><HoverFill />
-            </a>
+            </a>}
           </div>
         </section>
       </main>
@@ -1224,10 +1367,10 @@ export default function SleepHouse() {
               </p>
             </div>
             <aside>
-              <a className="footer-cta circle-hover" href="#contato">
+              <a className="footer-cta circle-hover" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
                 <span>
                   <strong>Falar com um consultor</strong>
-                  <small>Atendimento pelo WhatsApp</small>
+                  <small>{formVersion ? "Receba sua recomendação" : "Atendimento pelo WhatsApp"}</small>
                 </span>
                 <i>
                   <Arrow />
@@ -1237,10 +1380,10 @@ export default function SleepHouse() {
               <div className="social-links">
                 <a href="#marcas">Marcas</a>
                 <a href="#ofertas">Ofertas</a>
-                <a href="https://wa.me/5511985608380">
-                  WhatsApp
+                <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"}>
+                  {formVersion ? "Formulário" : "WhatsApp"}
                 </a>
-                <a href="https://www.google.com/maps/search/Sleep+House+Ipiranga">Google</a>
+                <a href={`https://www.google.com/maps/search/${encodeURIComponent(region.mapQuery)}`}>Google</a>
               </div>
             </aside>
           </div>
@@ -1254,11 +1397,11 @@ export default function SleepHouse() {
               </div>
             </nav>
             <address>
-              <strong>Ipiranga, São Paulo</strong>
+              <strong>{region.location}</strong>
               <p>
-                Av. Nazaré, 550 — Ipiranga, São Paulo — SP
+                {region.address}
               </p>
-              <a href="https://www.google.com/maps/dir/?api=1&destination=Av.+Nazaré,+550,+São+Paulo">
+              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(region.mapQuery)}`}>
                 ◉ Como chegar &nbsp; <Arrow />
               </a>
             </address>
@@ -1266,7 +1409,7 @@ export default function SleepHouse() {
         </div>
         <div className="footer-legal">
           <div className="container">
-            <span>© 2026 Sleep House Ipiranga. Todos os direitos reservados.</span>
+            <span>© 2026 Sleep House {region.label}. Todos os direitos reservados.</span>
             <span>
               Marcas premium · consultoria especializada
               <br />Entrega express e montagem gratuita em condições selecionadas
@@ -1285,12 +1428,12 @@ export default function SleepHouse() {
             ↑
           </button>
         ) : null}
-        <a href="https://wa.me/5511985608380" aria-label="WhatsApp">
+        <a href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label={formVersion ? "Responder formulário" : "WhatsApp"}>
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
           </svg>
         </a>
-        <a className="floating-primary" href="#contato" aria-label="Falar com consultor">
+        <a className="floating-primary" href={formVersion ? "#contato" : conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label="Falar com consultor">
           <i />
           →
         </a>
