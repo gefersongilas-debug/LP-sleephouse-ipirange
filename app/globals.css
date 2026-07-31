@@ -3135,6 +3135,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
 .lp-testimonials-marquee {
   position: relative;
   width: 100%;
+  margin-block: -2rem -3rem;
   overflow: hidden;
 }
 
@@ -3163,7 +3164,7 @@ html[data-cursor-interactive] .custom-cursor-ring {
   display: flex;
   gap: 1rem;
   width: max-content;
-  padding-block: 0.45rem 1.6rem;
+  padding-block: 2.5rem 4.5rem;
   animation: lp-testimonials-marquee 34s linear infinite;
   will-change: transform;
 }
