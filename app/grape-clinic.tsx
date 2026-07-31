@@ -62,7 +62,7 @@ const brands = [
   {
     name: "American Sleep",
     slug: "american-sleep",
-    logo: "https://www.innomax.com/wp-content/uploads/2020/06/AmericanSleepColl_Logo-Blue.jpg",
+    logo: "/brand/logo-american.png",
     image: "/images/sleep-house/produto-americansleep.jpg",
     description: "Conforto premium a um preço justo",
   },
@@ -205,21 +205,15 @@ const stores = [
 const testimonials = [
   {
     author: "Monique Quin",
-    context: "Cliente verificada Sleep House",
     text: "A Sandra me atendeu com muita paciência e me ajudou a achar o modelo certo para minha necessidade. Produto de qualidade, adoramos!",
-    href: "https://sleephouselp.com.br/",
   },
   {
     author: "Michele Turci",
-    context: "Cliente verificada Sleep House",
     text: "Atendimento excelente e produtos de qualidade. Me explicaram tudo em detalhes e deram ótimas sugestões. Entrega rápida e perfeita!",
-    href: "https://sleephouses.com.br/",
   },
   {
     author: "Marcelo P.",
-    context: "Avaliação Google · Sleep House Pacaembu",
     text: "Excelente loja, bom atendimento, entrega rápida, super recomendo. Estou amando meu colchão novo.",
-    href: "https://wanderlog.com/place/details/12647548/sleep-house-colch%C3%B5es--tempur-pacaembu",
   },
 ];
 
@@ -546,11 +540,86 @@ export default function SleepHouse() {
               );
             });
         }
+
+        const signsTimeline = document.querySelector<HTMLElement>(
+          ".lp-sign-timeline",
+        );
+        const signsProgress = document.querySelector<HTMLElement>(
+          ".lp-sign-timeline-progress",
+        );
+
+        if (signsTimeline && signsProgress) {
+          gsap.fromTo(
+            signsProgress,
+            { scaleY: 0 },
+            {
+              scaleY: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: signsTimeline,
+                start: "top 50%",
+                end: "bottom 50%",
+                scrub: coarsePointer ? 0.2 : 0.45,
+              },
+            },
+          );
+
+          gsap.utils
+            .toArray<HTMLElement>(".lp-sign-timeline-item")
+            .forEach((item) => {
+              const content = item.querySelectorAll<HTMLElement>(
+                ".lp-sign-timeline-copy, .lp-sign-timeline-detail",
+              );
+              const dot = item.querySelector<HTMLElement>(
+                ".lp-sign-timeline-dot",
+              );
+
+              gsap.fromTo(
+                content,
+                { opacity: 0.18, y: 18 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: item,
+                    start: "top 86%",
+                    end: "center 50%",
+                    scrub: coarsePointer ? 0.2 : 0.45,
+                  },
+                },
+              );
+
+              if (dot) {
+                gsap.fromTo(
+                  dot,
+                  {
+                    backgroundColor: "#d8d6cd",
+                    borderColor: "#fbfaf6",
+                    scale: 0.72,
+                  },
+                  {
+                    backgroundColor: "#cf9c00",
+                    borderColor: "#fbfaf6",
+                    scale: 1,
+                    ease: "none",
+                    scrollTrigger: {
+                      trigger: item,
+                      start: "top 86%",
+                      end: "center 50%",
+                      scrub: coarsePointer ? 0.2 : 0.45,
+                    },
+                  },
+                );
+              }
+            });
+        }
       } else {
         gsap.set(
-          ".reveal, .reveal-stagger > *, .animated-heading .heading-word > span",
+          ".reveal, .reveal-stagger > *, .animated-heading .heading-word > span, .lp-sign-timeline-copy, .lp-sign-timeline-detail, .lp-sign-timeline-dot",
           { opacity: 1, y: 0, scale: 1 },
         );
+        gsap.set(".lp-sign-timeline-progress", { scaleY: 1 });
       }
     });
 
@@ -855,21 +924,13 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="prova" className="lp-section lp-testimonials patterned-section">
+        <section id="prova" className="lp-section lp-testimonials">
           <div className="container lp-testimonials-heading">
             <SectionTitle
               eyebrow="Depoimentos de clientes"
               title="Quem compra com a gente, conta assim"
               body="Relatos publicados por clientes Sleep House sobre atendimento, escolha e entrega."
             />
-            <a
-              className="lp-testimonials-source circle-hover reveal"
-              href="https://sleephouses.com.br/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>Ver fonte dos depoimentos</span> <Arrow /><HoverFill />
-            </a>
           </div>
 
           <div className="lp-testimonials-marquee reveal" aria-label="Depoimentos de clientes Sleep House">
@@ -881,24 +942,16 @@ export default function SleepHouse() {
                   key={groupIndex}
                 >
                   {testimonials.map((testimonial) => (
-                    <a
+                    <article
                       className="lp-testimonial-card"
-                      href={testimonial.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      tabIndex={groupIndex === 1 ? -1 : undefined}
                       key={`${groupIndex}-${testimonial.author}`}
                     >
                       <span className="lp-testimonial-stars" aria-label="5 de 5 estrelas">★★★★★</span>
                       <blockquote>“{testimonial.text}”</blockquote>
                       <footer>
-                        <div>
-                          <strong>{testimonial.author}</strong>
-                          <span>{testimonial.context}</span>
-                        </div>
-                        <Arrow />
+                        <strong>{testimonial.author}</strong>
                       </footer>
-                    </a>
+                    </article>
                   ))}
                 </div>
               ))}
@@ -906,7 +959,7 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="marcas" className="lp-section lp-brands patterned-section">
+        <section id="marcas" className="lp-section lp-brands">
           <div className="container">
             <SectionTitle
               eyebrow="Exclusividade Sleep House"
@@ -952,7 +1005,7 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="ofertas" className="lp-section lp-offers patterned-section">
+        <section id="ofertas" className="lp-section lp-offers">
           <div className="container">
             <SectionTitle
               eyebrow="Ofertas ativas"
@@ -988,26 +1041,59 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="sinais" className="lp-section lp-learn">
-          <div className="container lp-learn-grid">
-            <figure className="lp-learn-media reveal">
-              <img className="parallax-image" src="/images/sleep-house/produto-sleephouse-medium.jpeg" alt="Detalhe de colchão premium Sleep House" />
-            </figure>
-            <div className="lp-learn-content">
+        <section id="sinais" className="lp-section lp-signs-timeline">
+          <div className="container">
+            <div className="lp-signs-timeline-header">
               <SectionTitle
                 eyebrow="Antes de decidir"
-                title="4 sinais de que seu colchão já passou da hora de troca"
+                title="Seu colchão dá sinais antes de pedir a troca"
               />
-              <div className="lp-checklist reveal-stagger">
-                {signs.map((sign) => (
-                  <article key={sign.title}>
-                    <span className="checklist-icon"><sign.icon strokeWidth={1.7} aria-hidden="true" /></span>
-                    <p><strong>{sign.title}</strong> {sign.description}</p>
-                  </article>
-                ))}
+              <p className="section-copy reveal">
+                Percorra os sinais abaixo. Se dois ou mais fazem parte da sua
+                rotina, vale comparar seu colchão atual com um modelo que
+                respeite melhor o seu corpo.
+              </p>
+            </div>
+
+            <div className="lp-sign-timeline">
+              <div className="lp-sign-timeline-line" aria-hidden="true">
+                <span className="lp-sign-timeline-progress" />
+              </div>
+
+              {signs.map((sign, index) => (
+                <article className="lp-sign-timeline-item" key={sign.title}>
+                  <div className="lp-sign-timeline-copy">
+                    <span>Sinal {String(index + 1).padStart(2, "0")}</span>
+                    <h3>{sign.title}</h3>
+                  </div>
+
+                  <div className="lp-sign-timeline-axis" aria-hidden="true">
+                    <span className="lp-sign-timeline-dot" />
+                  </div>
+
+                  <div className="lp-sign-timeline-detail">
+                    <span className="lp-sign-timeline-icon">
+                      <sign.icon strokeWidth={1.55} aria-hidden="true" />
+                    </span>
+                    <p>{sign.description}</p>
+                    <small>
+                      {index === 0 && "Tempo de uso"}
+                      {index === 1 && "Seu corpo avisa"}
+                      {index === 2 && "Desgaste visível"}
+                      {index === 3 && "Comparação de conforto"}
+                    </small>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="lp-signs-timeline-footer reveal">
+              <div>
+                <span>Reconheceu algum sinal?</span>
+                <h3>Você não precisa escolher o próximo colchão no escuro.</h3>
               </div>
               <a
-                className="lp-primary-button circle-hover reveal"
+                className="lp-primary-button circle-hover"
                 href="https://wa.me/5511985608380?text=Oi!%20Acho%20que%20est%C3%A1%20na%20hora%20de%20trocar%20meu%20colch%C3%A3o%2C%20pode%20me%20ajudar%20a%20escolher%3F"
                 target="_blank"
                 rel="noreferrer"
@@ -1018,10 +1104,10 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="blog" className="lp-section lp-blog patterned-section">
+        <section id="blog" className="lp-section lp-blog">
           <div className="container">
             <SectionTitle
-              eyebrow="Conteúdo · SEO local"
+              eyebrow="Conteúdo"
               title="Aprenda mais antes de decidir"
             />
             <div className="lp-blog-grid reveal-stagger">
@@ -1042,7 +1128,7 @@ export default function SleepHouse() {
           </div>
         </section>
 
-        <section id="lojas" className="lp-section lp-stores patterned-section">
+        <section id="lojas" className="lp-section lp-stores">
           <div className="container">
             <SectionTitle
               eyebrow="Visite a loja"
@@ -1170,7 +1256,9 @@ export default function SleepHouse() {
           </button>
         ) : null}
         <a href="https://wa.me/5511985608380" aria-label="WhatsApp">
-          ☎
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
+          </svg>
         </a>
         <a className="floating-primary" href="#contato" aria-label="Falar com consultor">
           <i />
