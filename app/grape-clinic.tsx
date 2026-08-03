@@ -168,8 +168,8 @@ const benefits = [
   },
   {
     icon: Truck,
-    title: "Entrega no mesmo dia",
-    description: "Entrega express para Ipiranga, Vila Mariana, Paraíso e região, conforme disponibilidade.",
+    title: "Entrega em até 72h",
+    description: "Entrega em até 72h para Ipiranga, Vila Mariana, Paraíso e região, conforme disponibilidade.",
   },
   {
     icon: Wrench,
@@ -508,8 +508,8 @@ export default function SleepHouse() {
   const formPageHref = `/formulario/etapas?regiao=${region.key}`;
   const conversionHref = formVersion ? formPageHref : whatsappHref(region);
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
-  const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega no mesmo dia"
-    ? { ...benefit, description: `Entrega express para ${region.label} e região, conforme disponibilidade.` }
+  const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega em até 72h"
+    ? { ...benefit, description: `Entrega em até 72h para ${region.label} e região, conforme disponibilidade.` }
     : benefit);
   const [introPhase, setIntroPhase] = useState<
     "loading" | "logo-out" | "reveal" | "done"
@@ -1218,8 +1218,8 @@ export default function SleepHouse() {
                 </div>
                 <div>
                   <Truck className="hero-stat-icon" strokeWidth={1.7} aria-hidden="true" />
-                  <strong>Hoje</strong>
-                  <span>entrega express*</span>
+                  <strong>Até 72h</strong>
+                  <span>para sua entrega*</span>
                 </div>
               </div>
               <div className="hero-ctas">
@@ -1551,7 +1551,7 @@ export default function SleepHouse() {
             <span>© 2026 Sleep House {region.label}. Todos os direitos reservados.</span>
             <span>
               Marcas premium · consultoria especializada
-              <br />Entrega express e montagem gratuita em condições selecionadas
+              <br />Entrega em até 72h e montagem gratuita em condições selecionadas
             </span>
           </div>
         </div>

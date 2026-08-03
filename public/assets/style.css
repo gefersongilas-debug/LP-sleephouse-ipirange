@@ -350,6 +350,8 @@ section{scroll-margin-top:70px;}
   display:flex;flex-direction:column;gap:12px;
 }
 .article-cta-box p{font-size:15px;margin:0;color:rgba(248,244,234,.78);}
+.article-cta-box strong{color:#fff;}
+.article-cta-box a:not(.btn){color:#F6D77A;text-decoration:underline;text-underline-offset:3px;}
 .article-cta-box .btn{align-self:flex-start;}
 .article-quote{
   border-left:3px solid var(--gold);padding:4px 0 4px 18px;margin:26px 0;
