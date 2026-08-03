@@ -244,40 +244,48 @@ const signs = [
   },
 ];
 
+const blogImages = {
+  storefront: "/assets/loja-fachada.jpg",
+  replacementSigns: "/images/blog-generated/quando-trocar-colchao.webp",
+  orthopedicSupport: "/images/blog-generated/colchao-ortopedico.webp",
+  priceAndFinancing: "/images/blog-generated/quanto-custa-colchao.webp",
+  brandComparison: "/images/blog-generated/comparativo-marcas.webp",
+} as const;
+
 const blogPosts = [
   {
     tag: "Guia local",
     title: "Onde comprar colchão no Ipiranga: guia completo de lojas, marcas e preços",
     description: "Como comparar loja exclusiva e multimarca e o que testar pessoalmente antes de decidir.",
-    image: "/images/sleep-house/optimized/loja-fachada.webp",
+    image: blogImages.storefront,
     href: "/blog/onde-comprar-colchao-ipiranga.html",
   },
   {
     tag: "Educação sobre sono",
     title: "4 sinais de que está na hora de trocar o colchão",
     description: "Dor ao acordar, colchão afundado e mais de 10 anos de uso: veja os sinais de alerta.",
-    image: "/images/sleep-house/optimized/produto-sleephouse-medium.webp",
+    image: blogImages.replacementSigns,
     href: "/blog/quando-trocar-colchao-sinais.html",
   },
   {
     tag: "Guia local",
     title: "Colchão ortopédico em São Caetano do Sul: como escolher o ideal",
     description: "Firmeza, densidade e suporte real para dor lombar — o que considerar antes de comprar.",
-    image: "/images/sleep-house/optimized/produto-americansleep.webp",
+    image: blogImages.orthopedicSupport,
     href: "/blog/colchao-ortopedico-sao-caetano.html",
   },
   {
     tag: "Preço e parcelamento",
     title: "Quanto custa um colchão bom? Preços por categoria e parcelamento",
     description: "Faixas de preço por categoria e como o parcelamento em 12x sem juros muda a decisão.",
-    image: "/images/sleep-house/optimized/produto-stearnsfoster.webp",
+    image: blogImages.priceAndFinancing,
     href: "/blog/quanto-custa-colchao-preco-parcelamento.html",
   },
   {
     tag: "Comparação de marcas",
     title: "Tempur, Pikolin, American Sleep ou Stearns & Foster: qual escolher",
     description: "As diferenças reais entre as marcas importadas da loja.",
-    image: "/images/sleep-house/optimized/produto-tempur.webp",
+    image: blogImages.brandComparison,
     href: "/blog/tempur-pikolin-american-sleep-qual-escolher.html",
   },
 ];
