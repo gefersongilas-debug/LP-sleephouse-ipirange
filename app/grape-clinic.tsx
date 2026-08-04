@@ -129,28 +129,28 @@ const brands = [
     name: "Tempur",
     slug: "tempur",
     logo: "/brand/optimized/tempur.webp",
-    image: "/images/sleep-house/optimized/produto-tempur.webp",
+    image: "/brand/Tempur.jpeg",
     description: "A mesma tecnologia usada pela NASA",
   },
   {
     name: "Pikolin",
     slug: "pikolin",
     logo: "/brand/optimized/pikolin.webp",
-    image: "/images/sleep-house/optimized/produto-pikolin.webp",
+    image: "/brand/Pikolin.jpeg",
     description: "Referência de descanso na Europa",
   },
   {
     name: "Stearns & Foster",
     slug: "stearns-foster",
     logo: "/brand/optimized/stearns-foster.webp",
-    image: "/images/sleep-house/optimized/produto-stearnsfoster.webp",
+    image: "/brand/Stean & foster.jpeg",
     description: "Luxo americano, autêntico",
   },
   {
     name: "American Sleep",
     slug: "american-sleep",
     logo: "/brand/optimized/logo-american.webp",
-    image: "/images/sleep-house/optimized/produto-americansleep.webp",
+    image: "/brand/American Sleep.jpeg",
     description: "Conforto premium a um preço justo",
   },
 ];
@@ -169,7 +169,7 @@ const benefits = [
   {
     icon: Truck,
     title: "Entrega em até 72h",
-    description: "Entrega em até 72h para Ipiranga, Vila Mariana, Paraíso e região, conforme disponibilidade.",
+    description: "Receba seu colchão em até 72h.",
   },
   {
     icon: Wrench,
@@ -190,34 +190,44 @@ const benefits = [
 
 const offers = [
   {
-    badge: "Tecnologia NASA",
+    badge: "50% off",
     brand: "Tempur",
-    name: "Linha Tempur Adaptável",
+    name: "Linha Tempur",
     image: "/images/sleep-house/optimized/produto-tempur.webp",
     description: "Espuma viscoelástica que se molda ao seu corpo — indicada para quem sente dor nas costas ao acordar.",
-    priceLabel: "a partir de",
-    price: "12x R$ 249,90",
-    message: "Oi! Vi a oferta da linha Tempur no site e quero saber mais.",
+    priceLabel: "Oferta",
+    price: "50% OFF",
+    message: "Oi! Vi a oferta de 50% OFF da linha Tempur no site e quero aproveitar.",
   },
   {
-    badge: "Mais procurado",
-    brand: "American Sleep",
-    name: "Linha Denver Firm",
-    image: "/images/sleep-house/optimized/produto-americansleep.webp",
-    description: "Equilíbrio entre firmeza e conforto — a linha de entrada premium mais vendida da loja.",
-    priceLabel: "a partir de",
-    price: "12x R$ 189,90",
-    message: "Oi! Vi a oferta da linha American Sleep Denver no site e quero saber mais.",
-  },
-  {
-    badge: "40% off",
+    badge: "50% off + kit",
     brand: "Pikolin",
     name: "Linha Perfect Sleep",
     image: "/images/sleep-house/optimized/produto-pikolin.webp",
-    description: "A linha europeia mais desejada da loja, com desconto especial neste mês.",
-    priceLabel: "Casal",
-    price: "40% OFF",
-    message: "Oi! Vi o desconto da linha Pikolin Perfect Sleep e quero aproveitar.",
+    description: "Aproveite 50% OFF na linha Perfect Sleep e ganhe um kit de almofadas.",
+    priceLabel: "Oferta",
+    price: "50% OFF + kit de almofadas",
+    message: "Oi! Vi a oferta de 50% OFF da linha Perfect Sleep com kit de almofadas e quero aproveitar.",
+  },
+  {
+    badge: "Nova oferta",
+    brand: "American Sleep",
+    name: "Colchão Kansas",
+    image: "/ofertas/kansas.png",
+    description: "Conforto American Sleep com condição especial de lançamento na Sleep House.",
+    priceLabel: "a partir de",
+    price: "12x R$ 179,00",
+    message: "Oi! Vi a oferta do colchão Kansas da American Sleep a partir de 12x R$ 179,00 e quero saber mais.",
+  },
+  {
+    badge: "Nova oferta",
+    brand: "Stearns & Foster",
+    name: "Colchão Studio",
+    image: "/images/sleep-house/produto-stearnsfoster.jpg",
+    description: "Acabamento premium Stearns & Foster com condição especial na Sleep House.",
+    priceLabel: "a partir de",
+    price: "12x R$ 320,00",
+    message: "Oi! Vi a oferta do colchão Studio da Stearns & Foster a partir de 12x R$ 320,00 e quero saber mais.",
   },
 ];
 
@@ -319,8 +329,11 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-function MultiStepLeadForm({ region }: { region: Region }) {
-  const [answers, setAnswers] = useState<Record<string, string>>({ p5: region.label });
+function MultiStepLeadForm({ region, offer }: { region: Region; offer?: string }) {
+  const [answers, setAnswers] = useState<Record<string, string>>({
+    p5: region.label,
+    ...(offer ? { oferta: offer } : {}),
+  });
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const isContactStep = step === formQuestions.length;
@@ -405,10 +418,12 @@ function MultiStepLeadForm({ region }: { region: Region }) {
 
 function FormPage({
   region,
+  offer,
   cursorDotRef,
   cursorRingRef,
 }: {
   region: Region;
+  offer?: string;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
@@ -418,8 +433,8 @@ function FormPage({
       <div className="form-page-content">
         <p className="eyebrow">Sleep House {region.label}</p>
         <h1>Vamos encontrar o colchão ideal para você.</h1>
-        <p>Leva menos de um minuto. Ao final, um consultor entra em contato pelo WhatsApp.</p>
-        <MultiStepLeadForm region={region} />
+        <p>{offer ? <>Você selecionou <strong>{offer}</strong>. Responda às perguntas para receber um atendimento personalizado.</> : "Leva menos de um minuto. Ao final, um consultor entra em contato pelo WhatsApp."}</p>
+        <MultiStepLeadForm offer={offer} region={region} />
       </div>
       <a
         className="form-page-whatsapp"
@@ -506,7 +521,9 @@ function SectionTitle({
 
 export default function SleepHouse() {
   const pathname = typeof window === "undefined" ? "/" : window.location.pathname;
-  const requestedRegion = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("regiao");
+  const searchParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
+  const requestedRegion = searchParams?.get("regiao");
+  const selectedOffer = searchParams?.get("oferta") ?? undefined;
   const region = requestedRegion === "sao-caetano" || pathname.startsWith("/sao-caetano")
     ? regionDetails["sao-caetano"]
     : regionDetails.ipiranga;
@@ -516,9 +533,6 @@ export default function SleepHouse() {
   const formPageHref = `/formulario/etapas?regiao=${region.key}`;
   const conversionHref = formVersion ? formPageHref : whatsappHref(region);
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
-  const regionalBenefits = benefits.map((benefit) => benefit.title === "Entrega em até 72h"
-    ? { ...benefit, description: `Entrega em até 72h para ${region.label} e região, conforme disponibilidade.` }
-    : benefit);
   const [introPhase, setIntroPhase] = useState<
     "loading" | "logo-out" | "reveal" | "done"
   >("loading");
@@ -1050,7 +1064,7 @@ export default function SleepHouse() {
   }, []);
 
   if (thankYouPage) return <ThankYouPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} region={region} />;
-  if (formPage) return <FormPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} region={region} />;
+  if (formPage) return <FormPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} offer={selectedOffer} region={region} />;
 
   return (
     <>
@@ -1314,7 +1328,7 @@ export default function SleepHouse() {
               title="O acesso a marcas premium, sem o preço de loja exclusiva"
             />
             <div className="lp-benefits-grid reveal-stagger">
-              {regionalBenefits.map((benefit) => (
+              {benefits.map((benefit) => (
                 <article className="lp-benefit-card" key={benefit.title}>
                   <span className="benefit-icon"><benefit.icon strokeWidth={1.65} aria-hidden="true" /></span>
                   <div>
@@ -1350,7 +1364,7 @@ export default function SleepHouse() {
                     </div>
                     <a
                       className="lp-primary-button circle-hover"
-                      href={formVersion ? conversionHref : whatsappHref(region, offer.message)}
+                      href={formVersion ? `${formPageHref}&oferta=${encodeURIComponent(offer.name)}` : whatsappHref(region, offer.message)}
                       target={formVersion ? undefined : "_blank"}
                       rel={formVersion ? undefined : "noreferrer"}
                     >
