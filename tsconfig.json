@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["app", "vite.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["apps", "packages", "*.ts", "*.mjs"],
+  "exclude": ["node_modules", "**/dist"]
 }

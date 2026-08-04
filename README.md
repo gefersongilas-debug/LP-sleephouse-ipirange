@@ -1,17 +1,32 @@
-# Sleep House Ipiranga — Landing Page
+# Sleep House — Monorepo de Landing Pages
 
-Landing page da Sleep House Ipiranga em React/Vite, construída a partir da
-estrutura estratégica da marca e da linguagem visual e de movimento da LP da
-Grapeclinic.
+Monorepo React/Vite com dois projetos independentes e uma landing page
+compartilhada:
+
+- `apps/ipiranga`: domínio e dados da unidade Ipiranga;
+- `apps/sao-caetano`: domínio e dados da unidade São Caetano;
+- `packages/landing-page`: componentes, formulário, estilos e assets comuns.
 
 ## Rodar localmente
 
 ```bash
 npm install
-npm run dev
+npm run dev:ipiranga
+npm run dev:sao-caetano
 ```
 
-Abra `http://localhost:3000`.
+Ipiranga usa `http://localhost:3000` e São Caetano usa
+`http://localhost:3001`.
+
+## Rotas
+
+Em ambos os projetos:
+
+- `/`: LP principal com conversão pelo formulário;
+- `/whats`: LP com conversão direta pelo WhatsApp;
+- `/formulario`: alias da LP principal;
+- `/formulario/etapas`: formulário multietapas;
+- `/obrigado`: confirmação de envio.
 
 ## Validação
 
@@ -22,9 +37,13 @@ npm run lint
 
 ## Publicar na Vercel
 
-Importe o repositório na Vercel. O framework, o comando de build e a pasta de
-saída já estão definidos em `vercel.json`; não há variáveis de ambiente
-obrigatórias.
+Crie dois projetos na Vercel a partir do mesmo repositório e configure os
+diretórios raiz como `apps/ipiranga` e `apps/sao-caetano`. Ative a opção da
+Vercel para incluir arquivos externos ao diretório raiz, pois os dois apps
+consomem `packages/landing-page`.
+
+Defina `VITE_SITE_URL` em cada projeto com o domínio final, sem barra no fim.
+Os arquivos `vercel.json` de cada app já contêm os rewrites necessários.
 
 O projeto inclui:
 
