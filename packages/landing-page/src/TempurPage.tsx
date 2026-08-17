@@ -324,14 +324,13 @@ export default function TempurPage({ region }: { region: SleepHouseRegion }) {
       targetY = event.clientY;
       document.documentElement.toggleAttribute(
         "data-cursor-interactive",
-        Boolean((event.target as HTMLElement).closest("a, button, input, select, summary, [role='button']")),
+        event.target instanceof Element && Boolean(event.target.closest("a, button, input, select, summary, [role='button']")),
       );
     };
     const updateScrollProgress = () => {
       const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const progress = Math.min(1, Math.max(0, window.scrollY / scrollable));
       ring.style.setProperty("--tempur-scroll-progress", String(progress));
-      ring.style.rotate = `${progress * 270}deg`;
     };
     const leave = () => {
       targetX = -100;
@@ -562,6 +561,33 @@ export default function TempurPage({ region }: { region: SleepHouseRegion }) {
           <a className="tempur-scroll-cue" href="#tecnologia"><span /> Role para conhecer</a>
         </section>
 
+        <section className="tempur-testimonials tempur-testimonials--second-fold" id="depoimentos">
+          <div className="tempur-shell">
+            <div className="tempur-testimonials-heading tempur-reveal">
+              <div>
+                <p className="tempur-section-label">Experiências Sleep House</p>
+                <h2>Quem escolhe com a gente, conta assim.</h2>
+              </div>
+              <span className="tempur-rating"><strong>5,0</strong><span>★★★★★</span><small>Relatos de clientes</small></span>
+            </div>
+          </div>
+          <div className="tempur-testimonials-marquee tempur-reveal" aria-label="Depoimentos de clientes Sleep House">
+            <div className="tempur-testimonials-track">
+              {[0, 1].map((groupIndex) => (
+                <div className="tempur-testimonials-group" aria-hidden={groupIndex === 1} key={groupIndex}>
+                  {testimonials.map((testimonial) => (
+                    <blockquote className="tempur-testimonial-card" key={`${groupIndex}-${testimonial.author}`}>
+                      <span aria-label="5 de 5 estrelas">★★★★★</span>
+                      <p>“{testimonial.text}”</p>
+                      <footer>{testimonial.author}</footer>
+                    </blockquote>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="tempur-intro" id="tecnologia">
           <div className="tempur-shell tempur-reveal">
             <p className="tempur-section-label">Por dentro da tecnologia</p>
@@ -710,27 +736,6 @@ export default function TempurPage({ region }: { region: SleepHouseRegion }) {
                     Como chegar <ArrowRight aria-hidden="true" />
                   </a>
                 </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="tempur-testimonials" id="depoimentos">
-          <div className="tempur-shell">
-            <div className="tempur-testimonials-heading tempur-reveal">
-              <div>
-                <p className="tempur-section-label">Experiências Sleep House</p>
-                <h2>Atendimento que ajuda a transformar dúvida em decisão.</h2>
-              </div>
-              <span className="tempur-rating"><strong>5,0</strong><span>★★★★★</span><small>Relatos de clientes</small></span>
-            </div>
-            <div className="tempur-testimonial-grid tempur-reveal">
-              {testimonials.map((testimonial) => (
-                <blockquote key={testimonial.author}>
-                  <span aria-label="5 de 5 estrelas">★★★★★</span>
-                  <p>“{testimonial.text}”</p>
-                  <footer>{testimonial.author}</footer>
-                </blockquote>
               ))}
             </div>
           </div>
