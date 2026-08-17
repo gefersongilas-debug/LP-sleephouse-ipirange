@@ -2,8 +2,8 @@ import type { SleepHouseRegion } from "@sleep-house/landing-page";
 
 export const cityConfig: SleepHouseRegion = {
   key: "ipiranga",
-  label: "Ipiranga",
-  location: "Ipiranga, SP",
+  label: "São Paulo e Grande ABC",
+  location: "São Paulo e Grande ABC",
   domain: import.meta.env.VITE_SITE_URL || "https://www.sleephouseipiranga.com.br",
   whatsapp: "5511985608380",
   stores: [
@@ -31,6 +31,16 @@ export const cityConfig: SleepHouseRegion = {
       name: "Sleep House Silva Bueno",
       address: "R. Silva Bueno, 2533 — Loja 18, São Paulo — SP",
       mapQuery: "Rua Silva Bueno 2533 Loja 18 São Paulo",
+    },
+    {
+      name: "Sleep House São Caetano",
+      address: "Av. Goiás, 436 — Santo Antônio, São Caetano do Sul — SP",
+      mapQuery: "Avenida Goiás 436 Santo Antônio São Caetano do Sul",
+    },
+    {
+      name: "Sleep House Outlet São Caetano",
+      address: "Av. Goiás, 750 — Santo Antônio, São Caetano do Sul — SP",
+      mapQuery: "Avenida Goiás 750 Santo Antônio São Caetano do Sul",
     },
   ],
 };

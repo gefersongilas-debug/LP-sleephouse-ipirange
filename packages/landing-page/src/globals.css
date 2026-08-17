@@ -91,6 +91,26 @@ a {
   }
 }
 
+.tempur-route,
+.tempur-route * {
+  cursor: auto !important;
+}
+
+.tempur-custom-cursor {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tempur-route,
+  .tempur-route * {
+    cursor: none !important;
+  }
+
+  .tempur-custom-cursor {
+    display: block;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -4659,5 +4679,1904 @@ html[data-cursor-interactive] .custom-cursor-ring {
 @media (prefers-reduced-motion: reduce) {
   .hover-fill {
     transition-duration: 0.01ms;
+  }
+}
+
+/* Tempur product landing page */
+.tempur-page {
+  --tempur-navy: #061824;
+  --tempur-navy-soft: #0d2a3c;
+  --tempur-blue: #24408e;
+  --tempur-blue-light: #6077b4;
+  --tempur-gold: #cf9c00;
+  --tempur-cream: #f5f2e9;
+  --tempur-paper: #fbfaf7;
+  --tempur-ink: #0d1d28;
+  --tempur-muted: #64727b;
+  --tempur-line: rgba(13, 29, 40, 0.14);
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--tempur-ink);
+  background: var(--tempur-paper);
+}
+
+.tempur-page ::selection {
+  color: white;
+  background: var(--tempur-blue);
+}
+
+.tempur-shell {
+  width: min(100% - 8rem, 1240px);
+  margin-inline: auto;
+}
+
+.tempur-section-label,
+.tempur-kicker {
+  margin: 0;
+  color: var(--tempur-blue);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.tempur-section-label {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.tempur-section-label::before {
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  content: "";
+}
+
+.tempur-page h1,
+.tempur-page h2,
+.tempur-page h3,
+.tempur-page p {
+  margin-top: 0;
+}
+
+.tempur-page h1,
+.tempur-page h2 {
+  text-wrap: balance;
+}
+
+.tempur-page h2 {
+  margin-bottom: 0;
+  font-size: clamp(2.25rem, 4.8vw, 4.65rem);
+  font-weight: 520;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.tempur-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.tempur-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tempur-button {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  border: 1px solid var(--tempur-gold);
+  border-radius: 999px;
+  padding: 0.72rem 0.85rem 0.72rem 1.4rem;
+  overflow: hidden;
+  color: var(--tempur-navy);
+  background: var(--tempur-gold);
+  font-size: 0.82rem;
+  font-weight: 750;
+  line-height: 1.2;
+  transition: color 0.3s, background-color 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+.tempur-button svg {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  padding: 0.52rem;
+  color: white;
+  background: var(--tempur-navy);
+  transition: transform 0.3s var(--ease);
+}
+
+.tempur-button:hover,
+.tempur-button:focus-visible {
+  border-color: white;
+  color: var(--tempur-navy);
+  background: white;
+  transform: translateY(-2px);
+}
+
+.tempur-button:hover svg,
+.tempur-button:focus-visible svg {
+  transform: translateX(2px);
+}
+
+.tempur-text-link {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.tempur-text-link svg {
+  width: 17px;
+  transition: transform 0.3s;
+}
+
+.tempur-text-link:hover svg {
+  transform: translateX(4px);
+}
+
+.tempur-header {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 132px 1px 88px 1fr auto;
+  gap: 1.2rem;
+  align-items: center;
+  width: 100%;
+  height: 82px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  padding-inline: max(calc((100vw - 1240px) / 2), 2.5rem);
+  color: white;
+  transition: height 0.35s var(--ease), color 0.35s, background-color 0.35s, box-shadow 0.35s;
+}
+
+.tempur-header.is-scrolled {
+  height: 70px;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  color: white;
+  background: rgba(6, 24, 36, 0.96);
+  box-shadow: 0 8px 32px rgba(6, 24, 36, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.tempur-header-brand,
+.tempur-header-tempur {
+  display: block;
+  width: 100%;
+}
+
+.tempur-header-brand img {
+  width: 100%;
+  height: auto;
+}
+
+.tempur-header-tempur {
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.82;
+  transition: filter 0.35s, opacity 0.35s;
+}
+
+.tempur-header.is-scrolled .tempur-header-tempur {
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.82;
+}
+
+.tempur-header-divider {
+  width: 1px;
+  height: 26px;
+  background: currentColor;
+  opacity: 0.26;
+}
+
+.tempur-header nav {
+  display: flex;
+  gap: clamp(0.25rem, 1.2vw, 1.2rem);
+  justify-self: end;
+  margin-right: 0.6rem;
+  font-size: 0.77rem;
+  font-weight: 620;
+}
+
+.tempur-header nav a {
+  border-radius: 999px;
+  padding: 0.5rem 0.65rem;
+  opacity: 0.8;
+  transition: opacity 0.25s, background-color 0.25s;
+}
+
+.tempur-header nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.tempur-header.is-scrolled nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tempur-header-cta {
+  min-height: 44px;
+  padding: 0.55rem 0.6rem 0.55rem 1.05rem;
+  font-size: 0.73rem;
+}
+
+.tempur-header-cta svg {
+  width: 28px;
+  height: 28px;
+  padding: 0.42rem;
+}
+
+.tempur-menu-button {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  padding: 0.65rem;
+  color: inherit;
+  background: transparent;
+}
+
+.tempur-menu-button svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tempur-hero {
+  position: relative;
+  display: grid;
+  min-height: max(760px, 100svh);
+  isolation: isolate;
+  color: white;
+  background: var(--tempur-navy);
+}
+
+.tempur-hero-media,
+.tempur-hero-shade {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+}
+
+.tempur-hero-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 59% center;
+}
+
+.tempur-hero-shade {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(3, 18, 30, 0.98) 0%, rgba(3, 18, 30, 0.83) 41%, rgba(3, 18, 30, 0.21) 70%, rgba(3, 18, 30, 0.16) 100%),
+    linear-gradient(0deg, rgba(3, 18, 30, 0.68) 0%, transparent 36%);
+}
+
+.tempur-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 710px) 1fr;
+  gap: 5rem;
+  align-items: end;
+  width: min(100% - 8rem, 1240px);
+  margin-inline: auto;
+  padding-block: 11rem 6.7rem;
+}
+
+.tempur-hero-copy {
+  animation: tempur-hero-in 0.85s var(--ease) 0.1s both;
+}
+
+.tempur-kicker {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 1.7rem;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.tempur-kicker span {
+  width: 30px;
+  height: 1px;
+  background: var(--tempur-gold);
+}
+
+.tempur-hero h1 {
+  max-width: 720px;
+  margin-bottom: 1.65rem;
+  font-size: clamp(3.3rem, 6.6vw, 6.25rem);
+  font-weight: 500;
+  letter-spacing: -0.066em;
+  line-height: 0.91;
+}
+
+.tempur-hero-lead {
+  max-width: 630px;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.65;
+}
+
+.tempur-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.3rem;
+  align-items: center;
+}
+
+.tempur-hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.4rem;
+  margin: 2rem 0 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  list-style: none;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.71rem;
+  font-weight: 620;
+}
+
+.tempur-hero-trust li {
+  display: flex;
+  gap: 0.42rem;
+  align-items: center;
+}
+
+.tempur-hero-trust svg {
+  width: 14px;
+  color: var(--tempur-gold);
+}
+
+.tempur-hero-note {
+  align-self: end;
+  max-width: 260px;
+  border-left: 1px solid var(--tempur-gold);
+  margin: 0 0 0.4rem auto;
+  padding-left: 1.25rem;
+  animation: tempur-hero-in 0.85s var(--ease) 0.28s both;
+}
+
+.tempur-hero-note span {
+  color: var(--tempur-gold);
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tempur-hero-note p {
+  margin: 0.55rem 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.tempur-scroll-cue {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.tempur-scroll-cue span {
+  display: block;
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(var(--tempur-gold) 50%, rgba(255, 255, 255, 0.2) 50%);
+  background-size: 100% 200%;
+  animation: tempur-scroll 1.8s ease-in-out infinite;
+}
+
+@keyframes tempur-hero-in {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tempur-scroll {
+  from { background-position: 0 100%; }
+  to { background-position: 0 -100%; }
+}
+
+.tempur-intro {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  background: var(--tempur-paper);
+}
+
+.tempur-intro-heading {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: clamp(3rem, 7vw, 7rem);
+  align-items: end;
+  margin-top: 2rem;
+}
+
+.tempur-intro-heading p {
+  margin-bottom: 0.35rem;
+  color: var(--tempur-muted);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.tempur-differentials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: clamp(4rem, 7vw, 7rem);
+  border-top: 1px solid var(--tempur-line);
+  border-bottom: 1px solid var(--tempur-line);
+}
+
+.tempur-differentials article {
+  min-height: 330px;
+  padding: 2.1rem;
+  border-right: 1px solid var(--tempur-line);
+  transition: color 0.45s, background-color 0.45s, transform 0.45s var(--ease);
+}
+
+.tempur-differentials article:first-child {
+  border-left: 1px solid var(--tempur-line);
+}
+
+.tempur-differentials article:hover {
+  color: white;
+  background: var(--tempur-blue);
+  transform: translateY(-8px);
+}
+
+.tempur-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6rem;
+  color: var(--tempur-blue);
+}
+
+.tempur-differentials article:hover .tempur-card-top,
+.tempur-differentials article:hover p {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.tempur-card-top span {
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+}
+
+.tempur-card-top svg {
+  width: 28px;
+  height: 28px;
+}
+
+.tempur-differentials h3 {
+  margin-bottom: 0.8rem;
+  font-size: 1.35rem;
+  font-weight: 580;
+  letter-spacing: -0.025em;
+}
+
+.tempur-differentials p {
+  margin-bottom: 0;
+  color: var(--tempur-muted);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  transition: color 0.45s;
+}
+
+.tempur-products {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  color: white;
+  background: #071b2a;
+  overflow: hidden;
+}
+
+.tempur-products-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 0.42fr);
+  gap: clamp(3rem, 8vw, 8rem);
+  align-items: end;
+  margin-bottom: clamp(3.5rem, 6vw, 6rem);
+}
+
+.tempur-products-heading .tempur-section-label {
+  color: var(--tempur-gold);
+}
+
+.tempur-products-heading h2 {
+  max-width: 820px;
+  margin-top: 1.7rem;
+}
+
+.tempur-products-heading > p {
+  margin: 0 0 0.45rem;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.tempur-products-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(1rem, 2.2vw, 2rem);
+}
+
+.tempur-product-card {
+  grid-column: span 6;
+  margin: 0;
+}
+
+.tempur-product-card--collection {
+  grid-column: span 7;
+}
+
+.tempur-product-card--cutout {
+  grid-column: span 5;
+  margin-top: clamp(4rem, 9vw, 8rem);
+}
+
+.tempur-product-card--room {
+  grid-column: span 12;
+  margin-block: clamp(1rem, 3vw, 2rem);
+}
+
+.tempur-product-media {
+  position: relative;
+  height: clamp(380px, 48vw, 680px);
+  overflow: hidden;
+  background: #102b3f;
+}
+
+.tempur-product-card--cutout .tempur-product-media {
+  height: clamp(430px, 48vw, 620px);
+  background: linear-gradient(145deg, #f5f3ed, #d9e0e5);
+}
+
+.tempur-product-card--room .tempur-product-media {
+  height: clamp(480px, 58vw, 780px);
+}
+
+.tempur-product-card--detail .tempur-product-media {
+  height: clamp(340px, 42vw, 540px);
+}
+
+.tempur-product-media img {
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  transition: filter 0.55s var(--ease);
+  will-change: transform;
+}
+
+.tempur-product-card--collection .tempur-product-media img,
+.tempur-product-card--cutout .tempur-product-media img {
+  padding: clamp(1rem, 3vw, 3.5rem);
+  object-fit: contain;
+}
+
+.tempur-product-card:hover .tempur-product-media img {
+  filter: brightness(1.07);
+}
+
+.tempur-product-media > span {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 50%;
+  color: white;
+  background: rgba(4, 19, 30, 0.28);
+  backdrop-filter: blur(8px);
+  font-size: 0.61rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.tempur-product-card figcaption {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.35fr) 1fr;
+  gap: 1.4rem;
+  align-items: baseline;
+  padding: 1.25rem 0 1.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.tempur-product-card figcaption small {
+  color: var(--tempur-gold);
+  font-size: 0.6rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tempur-product-card figcaption h3 {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 520;
+  letter-spacing: -0.025em;
+}
+
+.tempur-test-section {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  color: white;
+  background: var(--tempur-navy);
+}
+
+.tempur-test-grid {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.86fr) minmax(420px, 1.14fr);
+  gap: clamp(4rem, 8vw, 8rem);
+  align-items: center;
+}
+
+.tempur-test-media {
+  position: relative;
+  min-height: 680px;
+  overflow: hidden;
+  background: var(--tempur-navy-soft);
+}
+
+.tempur-test-media > img {
+  width: 100%;
+  height: 100%;
+  min-height: 680px;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease);
+}
+
+.tempur-test-media:hover > img {
+  transform: scale(1.035);
+}
+
+.tempur-image-caption {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  padding: 1.1rem 1.2rem;
+  background: rgba(6, 24, 36, 0.86);
+  backdrop-filter: blur(12px);
+}
+
+.tempur-image-caption span,
+.tempur-image-caption strong {
+  display: block;
+}
+
+.tempur-image-caption span {
+  margin-bottom: 0.3rem;
+  color: var(--tempur-gold);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.tempur-image-caption strong {
+  font-family: var(--display-font);
+  font-size: 1.12rem;
+  font-weight: 520;
+}
+
+.tempur-test-copy .tempur-section-label,
+.tempur-guidance .tempur-section-label,
+.tempur-conversion .tempur-section-label {
+  color: var(--tempur-gold);
+}
+
+.tempur-test-copy h2 {
+  max-width: 650px;
+  margin: 1.7rem 0 1.6rem;
+}
+
+.tempur-test-lead {
+  max-width: 590px;
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.tempur-journey {
+  margin: 2.4rem 0 2.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.tempur-journey article {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1.2rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.tempur-journey-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  color: var(--tempur-gold);
+}
+
+.tempur-journey-icon svg {
+  width: 20px;
+}
+
+.tempur-journey small {
+  color: var(--tempur-gold);
+  font-size: 0.58rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tempur-journey h3 {
+  margin: 0.18rem 0 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 580;
+}
+
+.tempur-journey p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.81rem;
+  line-height: 1.55;
+}
+
+.tempur-guidance {
+  padding-block: clamp(6.5rem, 9vw, 9rem);
+  color: white;
+  background: var(--tempur-blue);
+}
+
+.tempur-guidance-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.72fr;
+  gap: clamp(4rem, 10vw, 10rem);
+}
+
+.tempur-guidance h2 {
+  margin-top: 1.7rem;
+}
+
+.tempur-guidance-copy > p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.tempur-guidance-copy ul {
+  display: grid;
+  gap: 1rem;
+  margin: 2.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tempur-guidance-copy li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.84rem;
+}
+
+.tempur-guidance-copy svg {
+  width: 17px;
+  color: var(--tempur-gold);
+}
+
+.tempur-location {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  background: var(--tempur-cream);
+}
+
+.tempur-location-grid {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: clamp(4rem, 8vw, 8rem);
+  align-items: center;
+}
+
+.tempur-location-copy h2 {
+  margin: 1.7rem 0 1.5rem;
+}
+
+.tempur-location-copy > p {
+  color: var(--tempur-muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.tempur-location-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 2rem 0 2.3rem;
+}
+
+.tempur-location-badges span {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  border: 1px solid var(--tempur-line);
+  border-radius: 999px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 680;
+}
+
+.tempur-location-badges svg {
+  width: 16px;
+  color: var(--tempur-blue);
+}
+
+.tempur-location-copy .tempur-button,
+.tempur-faq .tempur-button {
+  color: white;
+  background: var(--tempur-navy);
+  border-color: var(--tempur-navy);
+}
+
+.tempur-location-copy .tempur-button svg,
+.tempur-faq .tempur-button svg {
+  color: var(--tempur-navy);
+  background: var(--tempur-gold);
+}
+
+.tempur-location-copy .tempur-button:hover,
+.tempur-faq .tempur-button:hover {
+  color: white;
+  background: var(--tempur-blue);
+  border-color: var(--tempur-blue);
+}
+
+.tempur-location-media {
+  position: relative;
+  height: 590px;
+}
+
+.tempur-location-media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tempur-location-card {
+  position: absolute;
+  right: -2rem;
+  bottom: -2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  width: min(340px, calc(100% - 2rem));
+  padding: 1.25rem;
+  color: white;
+  background: var(--tempur-blue);
+  box-shadow: 0 24px 60px rgba(13, 29, 40, 0.2);
+}
+
+.tempur-location-card > svg {
+  width: 28px;
+  color: var(--tempur-gold);
+}
+
+.tempur-location-card small,
+.tempur-location-card strong {
+  display: block;
+}
+
+.tempur-location-card small {
+  margin-bottom: 0.25rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.tempur-location-card strong {
+  font-family: var(--display-font);
+  font-size: 1rem;
+  font-weight: 540;
+}
+
+.tempur-store-directory {
+  margin-top: clamp(6rem, 10vw, 10rem);
+}
+
+.tempur-store-directory-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--tempur-line);
+}
+
+.tempur-store-directory-heading h3 {
+  max-width: 700px;
+  margin: 1rem 0 0;
+  font-family: var(--display-font);
+  font-size: clamp(2.2rem, 4vw, 4.1rem);
+  font-weight: 520;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.tempur-store-directory-heading > span {
+  color: var(--tempur-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tempur-store-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 1px;
+  background: var(--tempur-line);
+}
+
+.tempur-store-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 285px;
+  padding: 1.6rem;
+  background: var(--tempur-cream);
+  transition: color 0.4s, background-color 0.4s, transform 0.4s var(--ease);
+}
+
+.tempur-store-card:hover {
+  z-index: 1;
+  color: white;
+  background: var(--tempur-blue);
+  transform: translateY(-6px);
+}
+
+.tempur-store-number {
+  color: var(--tempur-blue);
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.12em;
+  transition: color 0.4s;
+}
+
+.tempur-store-card:hover .tempur-store-number {
+  color: var(--tempur-gold);
+}
+
+.tempur-store-card h4 {
+  margin: 2.5rem 0 0.7rem;
+  font-family: var(--display-font);
+  font-size: 1.45rem;
+  font-weight: 540;
+  letter-spacing: -0.025em;
+}
+
+.tempur-store-card p {
+  margin: 0;
+  color: var(--tempur-muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  transition: color 0.4s;
+}
+
+.tempur-store-card:hover p {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.tempur-store-card a {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-self: start;
+  margin-top: 1.5rem;
+  color: var(--tempur-blue);
+  font-size: 0.65rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.4s;
+}
+
+.tempur-store-card:hover a {
+  color: var(--tempur-gold);
+}
+
+.tempur-store-card a svg {
+  width: 15px;
+  transition: transform 0.3s var(--ease);
+}
+
+.tempur-store-card a:hover svg {
+  transform: translateX(4px);
+}
+
+.tempur-testimonials {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  background: var(--tempur-paper);
+}
+
+.tempur-testimonials-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: end;
+}
+
+.tempur-testimonials-heading h2 {
+  max-width: 790px;
+  margin-top: 1.7rem;
+}
+
+.tempur-rating {
+  display: grid;
+  min-width: 136px;
+  text-align: right;
+}
+
+.tempur-rating > strong {
+  font-family: var(--display-font);
+  font-size: 3.6rem;
+  font-weight: 520;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.tempur-rating > span {
+  color: var(--tempur-gold);
+  letter-spacing: 0.12em;
+}
+
+.tempur-rating small {
+  margin-top: 0.25rem;
+  color: var(--tempur-muted);
+  font-size: 0.65rem;
+}
+
+.tempur-testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 5rem;
+  border-top: 1px solid var(--tempur-line);
+  border-bottom: 1px solid var(--tempur-line);
+}
+
+.tempur-testimonial-grid blockquote {
+  display: flex;
+  flex-direction: column;
+  min-height: 330px;
+  margin: 0;
+  padding: 2.1rem;
+  border-right: 1px solid var(--tempur-line);
+}
+
+.tempur-testimonial-grid blockquote:first-child {
+  border-left: 1px solid var(--tempur-line);
+}
+
+.tempur-testimonial-grid blockquote > span {
+  color: var(--tempur-gold);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+}
+
+.tempur-testimonial-grid blockquote p {
+  margin: 2.8rem 0 2rem;
+  font-family: var(--display-font);
+  font-size: 1.18rem;
+  line-height: 1.55;
+}
+
+.tempur-testimonial-grid footer {
+  margin-top: auto;
+  color: var(--tempur-blue);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tempur-faq {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  background: var(--tempur-cream);
+}
+
+.tempur-faq-grid {
+  display: grid;
+  grid-template-columns: 0.68fr 1.32fr;
+  gap: clamp(4rem, 10vw, 10rem);
+}
+
+.tempur-faq-heading {
+  align-self: start;
+  position: sticky;
+  top: 120px;
+}
+
+.tempur-faq-heading h2 {
+  margin: 1.7rem 0 1.5rem;
+}
+
+.tempur-faq-heading > p {
+  margin-bottom: 2rem;
+  color: var(--tempur-muted);
+  line-height: 1.7;
+}
+
+.tempur-faq-list {
+  border-top: 1px solid var(--tempur-line);
+}
+
+.tempur-faq-list details {
+  border-bottom: 1px solid var(--tempur-line);
+  padding: 0 0.2rem;
+}
+
+.tempur-faq-list summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.55rem 0;
+  font-family: var(--display-font);
+  font-size: 1.08rem;
+  font-weight: 560;
+  list-style: none;
+}
+
+.tempur-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.tempur-faq-list summary svg {
+  flex: 0 0 auto;
+  width: 19px;
+  color: var(--tempur-blue);
+  transition: transform 0.3s;
+}
+
+.tempur-faq-list details[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.tempur-faq-list details > p {
+  max-width: 660px;
+  margin: -0.4rem 0 1.5rem;
+  color: var(--tempur-muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.tempur-conversion {
+  padding-block: clamp(6.5rem, 10vw, 10rem);
+  color: white;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(36, 64, 142, 0.35), transparent 36%),
+    var(--tempur-navy);
+}
+
+.tempur-conversion-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(4rem, 9vw, 9rem);
+  align-items: center;
+}
+
+.tempur-conversion-copy h2 {
+  margin: 1.7rem 0 1.5rem;
+}
+
+.tempur-conversion-copy > p {
+  max-width: 520px;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.7;
+}
+
+.tempur-conversion-note {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1.3rem;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.7rem;
+}
+
+.tempur-conversion-note svg {
+  width: 16px;
+  color: var(--tempur-gold);
+}
+
+.tempur-form,
+.tempur-form-success {
+  padding: clamp(2rem, 4vw, 3.5rem);
+  color: var(--tempur-ink);
+  background: var(--tempur-paper);
+}
+
+.tempur-form-heading {
+  margin-bottom: 2rem;
+}
+
+.tempur-form-heading > span {
+  color: var(--tempur-blue);
+  font-size: 0.63rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tempur-form-heading h3,
+.tempur-form-success h3 {
+  margin: 0.55rem 0 0.65rem;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  font-weight: 540;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.tempur-form-heading p,
+.tempur-form-success p {
+  margin-bottom: 0;
+  color: var(--tempur-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.tempur-form > label:not(.tempur-consent) {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.tempur-form > label > span {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.tempur-form input:not([type="checkbox"]),
+.tempur-form select {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--tempur-line);
+  border-radius: 0;
+  padding: 0.8rem 0.95rem;
+  outline: none;
+  color: var(--tempur-ink);
+  background: white;
+  font-size: 0.82rem;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.tempur-form input:focus,
+.tempur-form select:focus {
+  border-color: var(--tempur-blue);
+  box-shadow: 0 0 0 3px rgba(36, 64, 142, 0.1);
+}
+
+.tempur-consent {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  margin: 1.3rem 0;
+  color: var(--tempur-muted);
+}
+
+.tempur-consent input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--tempur-blue);
+}
+
+.tempur-consent span {
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  line-height: 1.45;
+}
+
+.tempur-form-submit {
+  width: 100%;
+  border: 1px solid var(--tempur-blue);
+  color: white;
+  background: var(--tempur-blue);
+}
+
+.tempur-form-submit svg {
+  color: var(--tempur-navy);
+  background: var(--tempur-gold);
+}
+
+.tempur-form-submit:disabled {
+  opacity: 0.65;
+}
+
+.tempur-form > small {
+  display: block;
+  margin-top: 0.8rem;
+  color: var(--tempur-muted);
+  font-size: 0.62rem;
+  text-align: center;
+}
+
+.tempur-form-error {
+  margin: 0.8rem 0 0;
+  color: #9f2f2f;
+  font-size: 0.72rem;
+}
+
+.tempur-form-success {
+  min-height: 480px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+}
+
+.tempur-form-success > span {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: white;
+  background: var(--tempur-blue);
+}
+
+.tempur-form-success > span svg {
+  width: 26px;
+}
+
+.tempur-form-success p {
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
+.tempur-form-success .tempur-button {
+  color: white;
+  background: var(--tempur-blue);
+  border-color: var(--tempur-blue);
+}
+
+.tempur-form-success .tempur-button svg {
+  color: var(--tempur-navy);
+  background: var(--tempur-gold);
+}
+
+.tempur-footer {
+  padding-top: 4rem;
+  color: white;
+  background: #03121c;
+}
+
+.tempur-footer-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 3rem;
+  align-items: center;
+  padding-bottom: 4rem;
+}
+
+.tempur-footer-brand {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.tempur-footer-brand img:first-child {
+  width: 128px;
+}
+
+.tempur-footer-brand img:last-child {
+  width: 76px;
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+.tempur-footer-brand > span {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tempur-footer-main > p {
+  max-width: 460px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.tempur-footer nav {
+  display: flex;
+  gap: 1.3rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+}
+
+.tempur-footer nav a:hover {
+  color: var(--tempur-gold);
+}
+
+.tempur-footer-legal {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-block: 1.25rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.6rem;
+}
+
+.tempur-floating-cta {
+  position: fixed;
+  z-index: 45;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  min-height: 48px;
+  box-shadow: 0 16px 38px rgba(6, 24, 36, 0.24);
+}
+
+.tempur-floating-cta svg {
+  width: 30px;
+  height: 30px;
+}
+
+.tempur-custom-cursor .custom-cursor-dot {
+  z-index: 2;
+  background: var(--tempur-gold);
+  box-shadow: 0 0 16px rgba(217, 187, 88, 0.58);
+}
+
+.tempur-custom-cursor .custom-cursor-ring,
+html[data-cursor-interactive] .tempur-custom-cursor .custom-cursor-ring {
+  --tempur-scroll-progress: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: conic-gradient(
+    var(--tempur-gold) calc(var(--tempur-scroll-progress) * 1turn),
+    rgba(255, 255, 255, 0.24) 0
+  );
+  box-shadow: 0 0 0 1px rgba(4, 25, 40, 0.1);
+}
+
+.tempur-custom-cursor .custom-cursor-ring::after {
+  content: "";
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+  border-radius: 50%;
+  background: rgba(7, 27, 42, 0.16);
+  backdrop-filter: blur(1px);
+}
+
+html[data-cursor-interactive] .tempur-custom-cursor .custom-cursor-ring {
+  box-shadow: 0 0 0 1px rgba(217, 187, 88, 0.22), 0 0 28px rgba(217, 187, 88, 0.18);
+}
+
+@media (max-width: 1100px) {
+  .tempur-header {
+    grid-template-columns: 124px 1px 80px 1fr auto;
+    gap: 0.9rem;
+    padding-inline: 2rem;
+  }
+
+  .tempur-header nav {
+    display: none;
+  }
+
+  .tempur-header-cta {
+    justify-self: end;
+  }
+
+  .tempur-test-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 4rem;
+  }
+
+  .tempur-location-card {
+    right: 1rem;
+  }
+}
+
+@media (max-width: 820px) {
+  .tempur-shell,
+  .tempur-hero-grid {
+    width: min(100% - 2.5rem, 680px);
+  }
+
+  .tempur-header {
+    grid-template-columns: 112px 1px 72px 1fr auto;
+    height: 70px;
+    padding-inline: 1.25rem;
+  }
+
+  .tempur-header-cta {
+    display: none;
+  }
+
+  .tempur-menu-button {
+    display: block;
+    grid-column: 5;
+  }
+
+  .tempur-header nav,
+  .tempur-header nav.is-open {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    left: 0;
+    display: grid;
+    gap: 0;
+    justify-self: stretch;
+    width: 100%;
+    margin: 0;
+    padding: 1rem 1.25rem 1.5rem;
+    color: var(--tempur-ink);
+    background: var(--tempur-paper);
+    box-shadow: 0 18px 32px rgba(6, 24, 36, 0.12);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: opacity 0.25s, transform 0.25s;
+  }
+
+  .tempur-header nav.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .tempur-header nav a {
+    border-bottom: 1px solid var(--tempur-line);
+    border-radius: 0;
+    padding: 0.9rem 0;
+  }
+
+  .tempur-hero {
+    min-height: 780px;
+  }
+
+  .tempur-hero-media video {
+    object-position: 63% center;
+  }
+
+  .tempur-hero-shade {
+    background: linear-gradient(90deg, rgba(3, 18, 30, 0.98) 0%, rgba(3, 18, 30, 0.74) 65%, rgba(3, 18, 30, 0.4) 100%);
+  }
+
+  .tempur-hero-grid {
+    grid-template-columns: 1fr;
+    align-items: end;
+    padding-block: 9rem 5.5rem;
+  }
+
+  .tempur-hero-copy {
+    max-width: 620px;
+  }
+
+  .tempur-hero h1 {
+    font-size: clamp(3.3rem, 11vw, 5.4rem);
+  }
+
+  .tempur-hero-note,
+  .tempur-scroll-cue {
+    display: none;
+  }
+
+  .tempur-intro-heading,
+  .tempur-products-heading,
+  .tempur-test-grid,
+  .tempur-guidance-grid,
+  .tempur-location-grid,
+  .tempur-faq-grid,
+  .tempur-conversion-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tempur-intro-heading,
+  .tempur-products-heading,
+  .tempur-guidance-grid,
+  .tempur-location-grid,
+  .tempur-faq-grid,
+  .tempur-conversion-grid {
+    gap: 3rem;
+  }
+
+  .tempur-intro-heading p {
+    max-width: 560px;
+  }
+
+  .tempur-differentials {
+    grid-template-columns: 1fr;
+  }
+
+  .tempur-differentials article,
+  .tempur-differentials article:first-child {
+    min-height: auto;
+    border-right: 1px solid var(--tempur-line);
+    border-bottom: 1px solid var(--tempur-line);
+    border-left: 1px solid var(--tempur-line);
+  }
+
+  .tempur-differentials article:last-child {
+    border-bottom: 0;
+  }
+
+  .tempur-products-heading > p {
+    max-width: 560px;
+  }
+
+  .tempur-product-card--collection,
+  .tempur-product-card--cutout {
+    grid-column: span 6;
+  }
+
+  .tempur-store-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tempur-card-top {
+    margin-bottom: 3.3rem;
+  }
+
+  .tempur-test-media,
+  .tempur-test-media > img {
+    min-height: 650px;
+  }
+
+  .tempur-guidance-copy {
+    max-width: 620px;
+  }
+
+  .tempur-location-copy {
+    max-width: 600px;
+  }
+
+  .tempur-location-media {
+    height: 500px;
+  }
+
+  .tempur-store-directory-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .tempur-testimonial-grid {
+    grid-template-columns: 1fr;
+    margin-top: 3rem;
+  }
+
+  .tempur-testimonial-grid blockquote,
+  .tempur-testimonial-grid blockquote:first-child {
+    min-height: 250px;
+    border-right: 1px solid var(--tempur-line);
+    border-bottom: 1px solid var(--tempur-line);
+    border-left: 1px solid var(--tempur-line);
+  }
+
+  .tempur-testimonial-grid blockquote:last-child {
+    border-bottom: 0;
+  }
+
+  .tempur-faq-heading {
+    position: static;
+  }
+
+  .tempur-footer-main {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .tempur-page h2 {
+    font-size: clamp(2.35rem, 12vw, 3.25rem);
+  }
+
+  .tempur-header {
+    grid-template-columns: 102px 1px 66px 1fr auto;
+    gap: 0.65rem;
+  }
+
+  .tempur-menu-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tempur-hero {
+    min-height: 760px;
+  }
+
+  .tempur-hero-media video {
+    object-position: 60% center;
+  }
+
+  .tempur-hero-shade {
+    background:
+      linear-gradient(0deg, rgba(3, 18, 30, 0.99) 0%, rgba(3, 18, 30, 0.82) 58%, rgba(3, 18, 30, 0.48) 100%),
+      linear-gradient(90deg, rgba(3, 18, 30, 0.72), transparent);
+  }
+
+  .tempur-hero-grid {
+    align-items: end;
+    padding-block: 8.3rem 3.2rem;
+  }
+
+  .tempur-kicker {
+    margin-bottom: 1.25rem;
+    font-size: 0.61rem;
+  }
+
+  .tempur-hero h1 {
+    max-width: 440px;
+    margin-bottom: 1.2rem;
+    font-size: clamp(3rem, 15.2vw, 4.2rem);
+  }
+
+  .tempur-hero-lead {
+    margin-bottom: 1.4rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .tempur-hero-actions {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .tempur-hero-actions .tempur-button {
+    width: 100%;
+  }
+
+  .tempur-text-link {
+    justify-content: center;
+  }
+
+  .tempur-hero-trust {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 1.1rem;
+    padding-top: 0.9rem;
+  }
+
+  .tempur-differentials article {
+    padding: 1.6rem;
+  }
+
+  .tempur-products-grid {
+    display: block;
+  }
+
+  .tempur-product-card,
+  .tempur-product-card--collection,
+  .tempur-product-card--cutout,
+  .tempur-product-card--room {
+    margin: 0 0 2.8rem;
+  }
+
+  .tempur-product-media,
+  .tempur-product-card--cutout .tempur-product-media,
+  .tempur-product-card--room .tempur-product-media,
+  .tempur-product-card--detail .tempur-product-media {
+    height: 390px;
+  }
+
+  .tempur-product-card figcaption {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .tempur-test-grid {
+    gap: 3.3rem;
+  }
+
+  .tempur-test-media,
+  .tempur-test-media > img {
+    min-height: 520px;
+  }
+
+  .tempur-journey article {
+    grid-template-columns: 42px 1fr;
+    gap: 0.9rem;
+  }
+
+  .tempur-journey-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tempur-location-media {
+    height: 380px;
+  }
+
+  .tempur-location-card {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: calc(100% - 1.5rem);
+  }
+
+  .tempur-store-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tempur-store-card {
+    min-height: 250px;
+  }
+
+  .tempur-testimonials-heading {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .tempur-rating {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .tempur-testimonial-grid blockquote {
+    padding: 1.6rem;
+  }
+
+  .tempur-form,
+  .tempur-form-success {
+    margin-inline: -0.25rem;
+    padding: 1.5rem;
+  }
+
+  .tempur-footer nav,
+  .tempur-footer-legal {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .tempur-footer-legal {
+    justify-content: start;
+  }
+
+  .tempur-floating-cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tempur-reveal,
+  .tempur-hero-copy,
+  .tempur-hero-note {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+
+  .tempur-scroll-cue span {
+    animation: none;
   }
 }
