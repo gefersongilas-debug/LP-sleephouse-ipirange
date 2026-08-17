@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/SleepHouse.tsx",
+    "./tempur": "./src/TempurPage.tsx",
     "./styles.css": "./src/globals.css"
   },
   "dependencies": {
