@@ -5762,6 +5762,109 @@ html[data-cursor-interactive] .custom-cursor-ring {
   font-size: 0.65rem;
 }
 
+.tempur-testimonials--second-fold {
+  overflow: hidden;
+  padding-block: clamp(4.5rem, 7vw, 7rem);
+  border-bottom: 1px solid var(--tempur-line);
+}
+
+.tempur-testimonials-marquee {
+  --tempur-testimonial-card-width: clamp(300px, 28vw, 390px);
+  --tempur-testimonials-group-width: calc(
+    var(--tempur-testimonial-card-width) + var(--tempur-testimonial-card-width) + var(--tempur-testimonial-card-width) + 2rem
+  );
+  --tempur-testimonials-start: max(0px, calc((100vw - var(--tempur-testimonials-group-width)) / 2));
+  position: relative;
+  width: 100%;
+  margin-top: 1.7rem;
+  overflow: hidden;
+}
+
+.tempur-testimonials-marquee::before,
+.tempur-testimonials-marquee::after {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: clamp(58px, 12vw, 210px);
+  pointer-events: none;
+  content: "";
+}
+
+.tempur-testimonials-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--tempur-paper) 6%, rgba(251, 250, 246, 0.94) 26%, rgba(251, 250, 246, 0));
+}
+
+.tempur-testimonials-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--tempur-paper) 6%, rgba(251, 250, 246, 0.94) 26%, rgba(251, 250, 246, 0));
+}
+
+.tempur-testimonials-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  padding-block: 1.2rem 0.8rem;
+  animation: tempur-testimonials-marquee 34s linear infinite;
+  transform: translate3d(var(--tempur-testimonials-start), 0, 0);
+  will-change: transform;
+}
+
+.tempur-testimonials-group {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 1rem;
+}
+
+.tempur-testimonial-card {
+  display: flex;
+  flex: 0 0 var(--tempur-testimonial-card-width);
+  flex-direction: column;
+  justify-content: space-between;
+  width: var(--tempur-testimonial-card-width);
+  min-height: 250px;
+  margin: 0;
+  border: 1px solid var(--tempur-line);
+  padding: 1.55rem;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 18px 48px rgba(8, 32, 51, 0.055);
+}
+
+.tempur-testimonial-card > span {
+  color: var(--tempur-gold);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+}
+
+.tempur-testimonial-card p {
+  flex: 1;
+  margin: 1.5rem 0 1.7rem;
+  font-family: var(--display-font);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.5;
+}
+
+.tempur-testimonial-card footer {
+  border-top: 1px solid var(--tempur-line);
+  padding-top: 1rem;
+  color: var(--tempur-blue);
+  font-size: 0.68rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes tempur-testimonials-marquee {
+  from {
+    transform: translate3d(var(--tempur-testimonials-start), 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--tempur-testimonials-start) - var(--tempur-testimonials-group-width) - 1rem), 0, 0);
+  }
+}
+
 .tempur-testimonial-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -6374,6 +6477,20 @@ html[data-cursor-interactive] .tempur-custom-cursor .custom-cursor-ring {
     margin-top: 3rem;
   }
 
+  .tempur-testimonials-heading {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+
+  .tempur-rating {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .tempur-testimonials-marquee {
+    --tempur-testimonial-card-width: min(82vw, 330px);
+  }
+
   .tempur-testimonial-grid blockquote,
   .tempur-testimonial-grid blockquote:first-child {
     min-height: 250px;
@@ -6567,6 +6684,11 @@ html[data-cursor-interactive] .tempur-custom-cursor .custom-cursor-ring {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .tempur-testimonials-track {
+    animation: none;
+    transform: none;
+  }
+
   .tempur-reveal,
   .tempur-hero-copy,
   .tempur-hero-note {
