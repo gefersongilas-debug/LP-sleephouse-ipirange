@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/SleepHouse.tsx",
     "./tempur": "./src/TempurPage.tsx",
+    "./pmax": "./src/PmaxPage.tsx",
     "./styles.css": "./src/globals.css"
   },
   "dependencies": {
