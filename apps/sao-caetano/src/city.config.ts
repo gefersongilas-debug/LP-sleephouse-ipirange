@@ -5,7 +5,7 @@ export const cityConfig: SleepHouseRegion = {
   label: "São Caetano",
   location: "São Caetano do Sul, SP",
   domain: import.meta.env.VITE_SITE_URL || "https://www.sleephousesaocaetano.com.br",
-  whatsapp: "5511997488296",
+  whatsapp: "5511955030527",
   stores: [
     {
       name: "Sleep House São Caetano",
