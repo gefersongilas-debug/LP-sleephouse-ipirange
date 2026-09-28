@@ -43,6 +43,10 @@ export type SleepHouseRegion = {
   location: string;
   domain: string;
   whatsapp: string;
+  whatsappLocations?: Array<{
+    label: string;
+    phone: string;
+  }>;
   stores: Array<{
     name: string;
     address: string;
@@ -66,27 +70,28 @@ const whatsappHref = (region: Region, message = `Oi! Quero falar com a Sleep Hou
 
 const formQuestions = [
   {
-    id: "p1",
+    id: "o_que_busca",
     label: "O que você está buscando?",
     options: ["Colchão", "Cama box ou Box baú", "Travesseiro", "Capa/protetor de colchão"],
   },
   {
-    id: "p2",
-    label: "Qual o tamanho do colchão que você busca?",
-    options: ["King", "Queen", "Casal", "Solteiro", "Medida especial"],
+    id: "valor_investimento",
+    label: "Qual valor de investimento você considera?",
+    options: [
+      "Até R$ 2.500",
+      "De R$ 2.500 a R$ 5.000",
+      "De R$ 5.000 a R$ 8.000",
+      "Acima de R$ 8.000",
+      "Quero orientação antes de definir",
+    ],
   },
   {
-    id: "p3",
-    label: "Qual sua preferência de firmeza/conforto?",
-    options: ["Macio", "Intermediário", "Firme / Ortopédico", "Quero ajuda do vendedor"],
-  },
-  {
-    id: "p4",
+    id: "pra_quando",
     label: "Para quando é a compra?",
     options: ["O mais rápido possível", "Este mês", "Nos próximos 3 meses", "Apenas pesquisando preços"],
   },
   {
-    id: "p5",
+    id: "loja_proxima",
     label: "Qual loja fica mais perto de você?",
     options: ["Ipiranga", "São Caetano"],
   },
@@ -297,25 +302,68 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-function MultiStepLeadForm({ region, offer, pmax = false }: { region: Region; offer?: string; pmax?: boolean }) {
+function WhatsAppLocationSelector({ region, variant }: { region: Region; variant: "floating" | "form" }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const locations = region.whatsappLocations ?? [{ label: region.label, phone: region.whatsapp }];
+  const optionsId = `whatsapp-location-options-${variant}`;
+
+  return (
+    <div className={`whatsapp-location-selector whatsapp-location-selector--${variant}`}>
+      {isOpen ? (
+        <div className="whatsapp-location-options" id={optionsId} role="dialog" aria-label="Escolha a loja para falar no WhatsApp">
+          <p>Com qual loja você quer falar?</p>
+          {locations.map((location) => (
+            <a
+              data-whatsapp-location={location.label}
+              href={`https://wa.me/${location.phone}?text=${encodeURIComponent(`Oi! Estou preenchendo o formulário da Sleep House ${location.label} e quero falar com um consultor.`)}`}
+              key={location.label}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <span className="whatsapp-location-label">{location.label}<WhatsAppIcon /></span>
+            </a>
+          ))}
+        </div>
+      ) : null}
+      <button
+        aria-controls={optionsId}
+        aria-expanded={isOpen}
+        aria-label="Escolher loja para falar no WhatsApp"
+        className="whatsapp-location-trigger"
+        onClick={() => setIsOpen((current) => !current)}
+        type="button"
+      >
+        <WhatsAppIcon />
+      </button>
+    </div>
+  );
+}
+
+function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: { region: Region; offer?: string; pmax?: boolean; abVariant?: boolean }) {
   const [tracking] = useState(() => captureTrackingParams());
-  const [answers, setAnswers] = useState<Record<string, string>>({
-    p5: region.label,
-    ...(offer ? { oferta: offer } : {}),
-  });
+  const [answers, setAnswers] = useState<Record<string, string>>(offer ? { oferta: offer } : {});
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending">("idle");
+  const advanceTimerRef = useRef<number | null>(null);
   const isContactStep = step === formQuestions.length;
   const question = formQuestions[step];
 
   const selectAnswer = (id: string, option: string) => {
     setAnswers((current) => ({ ...current, [id]: option }));
-    window.setTimeout(() => setStep((current) => Math.min(current + 1, formQuestions.length)), 180);
+    if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);
+    advanceTimerRef.current = window.setTimeout(() => {
+      setStep((current) => Math.min(current + 1, formQuestions.length));
+      advanceTimerRef.current = null;
+    }, 180);
   };
+
+  useEffect(() => () => {
+    if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);
+  }, []);
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!answers.nome || !answers.whatsapp) return;
+    if (!answers.nome || !answers.telefone) return;
     setStatus("sending");
     const body = new URLSearchParams({
       ...answers,
@@ -335,7 +383,7 @@ function MultiStepLeadForm({ region, offer, pmax = false }: { region: Region; of
         ...answers,
         ...tracking,
       });
-      window.location.assign(pmax ? "/pmax/obrigado" : "/obrigado");
+      window.location.assign(pmax ? "/pmax/obrigado" : abVariant ? "/ab/obrigado" : "/obrigado");
     } catch {
       setStatus("idle");
     }
@@ -353,13 +401,14 @@ function MultiStepLeadForm({ region, offer, pmax = false }: { region: Region; of
           <legend>{question.label}</legend>
           <div className="lead-form-options">
             {question.options.map((option) => (
-              <label className={answers[question.id] === option ? "is-selected" : ""} key={option}>
+              <label className={answers[question.id] === option ? "is-selected" : ""} key={option} onClick={() => selectAnswer(question.id, option)}>
                 <input
                   type="radio"
                   name={question.id}
                   value={option}
                   checked={answers[question.id] === option}
                   onChange={() => selectAnswer(question.id, option)}
+                  onClick={() => selectAnswer(question.id, option)}
                 />
                 <span>{option}</span>
               </label>
@@ -372,11 +421,8 @@ function MultiStepLeadForm({ region, offer, pmax = false }: { region: Region; of
           <label>Nome
             <input autoComplete="name" name="nome" onChange={(event) => setAnswers((current) => ({ ...current, nome: event.target.value }))} required type="text" value={answers.nome ?? ""} />
           </label>
-          <label>WhatsApp
-            <input autoComplete="tel" inputMode="tel" name="whatsapp" onChange={(event) => setAnswers((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="(11) 99999-9999" required type="tel" value={answers.whatsapp ?? ""} />
-          </label>
-          <label>E-mail <small>(opcional)</small>
-            <input autoComplete="email" name="email" onChange={(event) => setAnswers((current) => ({ ...current, email: event.target.value }))} type="email" value={answers.email ?? ""} />
+          <label>Telefone (WhatsApp)
+            <input autoComplete="tel" inputMode="tel" name="telefone" onChange={(event) => setAnswers((current) => ({ ...current, telefone: event.target.value }))} placeholder="(11) 99999-9999" required type="tel" value={answers.telefone ?? ""} />
           </label>
           <button className="lp-primary-button lead-form-submit" disabled={status === "sending"} type="submit">
             <span>{status === "sending" ? "Enviando..." : "Receber minha recomendação"}</span><Arrow />
@@ -392,33 +438,27 @@ function FormPage({
   region,
   offer,
   pmax = false,
+  abVariant = false,
   cursorDotRef,
   cursorRingRef,
 }: {
   region: Region;
   offer?: string;
   pmax?: boolean;
+  abVariant?: boolean;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   return (
     <main className="form-page brown-section">
-      <a className="form-page-logo" href={pmax ? "/pmax" : "/"} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
+      <a className="form-page-logo" href={pmax ? "/pmax" : abVariant ? "/ab" : "/"} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
       <div className="form-page-content">
         <p className="eyebrow">Sleep House {region.label}</p>
         <h1>Vamos encontrar o colchão ideal para você.</h1>
         <p>{offer ? <>Você selecionou <strong>{offer}</strong>. Responda às perguntas para receber um atendimento personalizado.</> : "Leva menos de um minuto. Ao final, um consultor entra em contato."}</p>
-        <MultiStepLeadForm offer={offer} pmax={pmax} region={region} />
+        <MultiStepLeadForm abVariant={abVariant} offer={offer} pmax={pmax} region={region} />
       </div>
-      {!pmax ? <a
-        className="form-page-whatsapp"
-        href={whatsappHref(region, `Oi! Estou preenchendo o formulário da Sleep House ${region.label} e quero falar com um consultor.`)}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={`Falar no WhatsApp com a Sleep House ${region.label}`}
-      >
-        <WhatsAppIcon />
-      </a> : null}
+      {!pmax && !abVariant ? <WhatsAppLocationSelector region={region} variant="form" /> : null}
       <div className="custom-cursor" aria-hidden="true">
         <span ref={cursorDotRef} className="custom-cursor-dot" />
         <span ref={cursorRingRef} className="custom-cursor-ring" />
@@ -430,22 +470,24 @@ function FormPage({
 function ThankYouPage({
   region,
   pmax = false,
+  abVariant = false,
   cursorDotRef,
   cursorRingRef,
 }: {
   region: Region;
   pmax?: boolean;
+  abVariant?: boolean;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   return (
     <main className="thank-you-page brown-section">
-      <a className="form-page-logo" href={pmax ? "/pmax" : "/"} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
+      <a className="form-page-logo" href={pmax ? "/pmax" : abVariant ? "/ab" : "/"} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
       <div className="thank-you-content">
         <span>✓</span>
         <h1>Obrigado!</h1>
         <p>Recebemos suas respostas. Um consultor da Sleep House {region.label} vai falar com você em breve.</p>
-        <a className="lp-primary-button" href={pmax ? "/pmax" : "/"}>Voltar para o site <Arrow /></a>
+        <a className="lp-primary-button" href={pmax ? "/pmax" : abVariant ? "/ab" : "/"}>Voltar para o site <Arrow /></a>
       </div>
       <div className="custom-cursor" aria-hidden="true">
         <span ref={cursorDotRef} className="custom-cursor-dot" />
@@ -498,12 +540,14 @@ function SectionTitle({
 export default function SleepHouse({ region, pmax = false }: { region: SleepHouseRegion; pmax?: boolean }) {
   const rawPathname = typeof window === "undefined" ? "/" : window.location.pathname;
   const pathname = rawPathname.replace(/\/+$/, "") || "/";
+  const abVariant = pathname === "/ab" || pathname.startsWith("/ab/");
+  const routePathname = abVariant ? pathname.slice(3) || "/" : pathname;
   const searchParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
   const selectedOffer = searchParams?.get("oferta") ?? undefined;
-  const formVersion = pathname !== "/whats";
-  const formPage = pmax ? pathname === "/pmax/formulario" : pathname === "/formulario/etapas";
-  const thankYouPage = pmax ? pathname === "/pmax/obrigado" : pathname === "/obrigado";
-  const formPageHref = pmax ? "/pmax/formulario" : "/formulario/etapas";
+  const formVersion = routePathname !== "/whats";
+  const formPage = pmax ? routePathname === "/pmax/formulario" : routePathname === "/formulario/etapas";
+  const thankYouPage = pmax ? routePathname === "/pmax/obrigado" : routePathname === "/obrigado";
+  const formPageHref = pmax ? "/pmax/formulario" : `${abVariant ? "/ab" : ""}/formulario/etapas`;
   const conversionHref = formVersion ? formPageHref : whatsappHref(region);
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
   const [introPhase, setIntroPhase] = useState<
@@ -545,6 +589,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
       (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
         event: "whatsapp_click",
         region: region.key,
+        whatsapp_location: link.dataset.whatsappLocation,
         form_version: "whatsapp",
       });
     };
@@ -1039,8 +1084,8 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
     };
   }, []);
 
-  if (thankYouPage) return <ThankYouPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} pmax={pmax} region={region} />;
-  if (formPage) return <FormPage cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} offer={selectedOffer} pmax={pmax} region={region} />;
+  if (thankYouPage) return <ThankYouPage abVariant={abVariant} cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} pmax={pmax} region={region} />;
+  if (formPage) return <FormPage abVariant={abVariant} cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} offer={selectedOffer} pmax={pmax} region={region} />;
 
   return (
     <>
@@ -1573,9 +1618,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
             ↑
           </button>
         ) : null}
-        {!pmax ? <a href={whatsappHref(region)} target="_blank" rel="noreferrer" aria-label="WhatsApp">
-          <WhatsAppIcon />
-        </a> : null}
+        {!pmax && !abVariant ? <WhatsAppLocationSelector region={region} variant="floating" /> : null}
         <a className="floating-primary" href={conversionHref} target={formVersion ? undefined : "_blank"} rel={formVersion ? undefined : "noreferrer"} aria-label="Falar com consultor">
           <i />
           →

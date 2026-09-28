@@ -6,6 +6,10 @@ export const cityConfig: SleepHouseRegion = {
   location: "Ipiranga e São Caetano",
   domain: import.meta.env.VITE_SITE_URL || "https://www.sleephouseipiranga.com.br",
   whatsapp: "5511955030521",
+  whatsappLocations: [
+    { label: "Ipiranga", phone: "5511955030521" },
+    { label: "São Caetano", phone: "5511955030527" },
+  ],
   stores: [
     {
       name: "Sleep House Ipiranga",
