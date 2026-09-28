@@ -78,11 +78,11 @@ const formQuestions = [
     id: "valor_investimento",
     label: "Qual valor de investimento você considera?",
     options: [
-      "Até R$ 2.500",
-      "De R$ 2.500 a R$ 5.000",
-      "De R$ 5.000 a R$ 8.000",
-      "Acima de R$ 8.000",
-      "Quero orientação antes de definir",
+      { label: "até R$1.000", value: "até r$1.000" },
+      { label: "de R$1.000 – R$1.700", value: "de r$1.000 – r$1.700" },
+      { label: "de R$1.700 – R$2.700", value: "de r$1.700 – r$2.700" },
+      { label: "de R$2.700 – R$4.000", value: "de r$2.700 – r$4.000" },
+      { label: "mais de R$4.000", value: "mais de r$4.000" },
     ],
   },
   {
@@ -400,19 +400,23 @@ function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: {
         <fieldset key={question.id}>
           <legend>{question.label}</legend>
           <div className="lead-form-options">
-            {question.options.map((option) => (
-              <label className={answers[question.id] === option ? "is-selected" : ""} key={option} onClick={() => selectAnswer(question.id, option)}>
+            {question.options.map((option) => {
+              const optionValue = typeof option === "string" ? option : option.value;
+              const optionLabel = typeof option === "string" ? option : option.label;
+              return (
+              <label className={answers[question.id] === optionValue ? "is-selected" : ""} key={optionValue} onClick={() => selectAnswer(question.id, optionValue)}>
                 <input
                   type="radio"
                   name={question.id}
-                  value={option}
-                  checked={answers[question.id] === option}
-                  onChange={() => selectAnswer(question.id, option)}
-                  onClick={() => selectAnswer(question.id, option)}
+                  value={optionValue}
+                  checked={answers[question.id] === optionValue}
+                  onChange={() => selectAnswer(question.id, optionValue)}
+                  onClick={() => selectAnswer(question.id, optionValue)}
                 />
-                <span>{option}</span>
+                <span>{optionLabel}</span>
               </label>
-            ))}
+              );
+            })}
           </div>
         </fieldset>
       ) : (
