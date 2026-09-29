@@ -375,7 +375,10 @@ function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: {
     });
 
     try {
-      await fetch(pmax ? PMAX_FORM_WEBHOOK : FORM_WEBHOOK, { method: "POST", mode: "no-cors", body });
+      await Promise.all([
+        fetch(FORM_WEBHOOK, { method: "POST", mode: "no-cors", body }),
+        fetch(PMAX_FORM_WEBHOOK, { method: "POST", mode: "no-cors", body }),
+      ]);
       (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
         event: "lead_form_submit",
         region: region.key,
