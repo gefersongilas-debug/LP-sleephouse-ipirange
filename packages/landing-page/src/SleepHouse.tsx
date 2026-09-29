@@ -36,6 +36,15 @@ const MOTION = {
 
 const FORM_WEBHOOK = "https://hook.us1.make.celonis.com/unxj1qznxqbeaseq1ms9rb4zxnp2u4vd";
 const PMAX_FORM_WEBHOOK = "https://hook.us1.make.celonis.com/6u9g4xdmwxyo6vigqqb5ivc5q72y07ru";
+const LINK_TRACKING_PARAM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "gclid",
+  "fbclid",
+] as const;
 
 export type SleepHouseRegion = {
   key: "ipiranga" | "sao-caetano";
@@ -559,7 +568,16 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
   const formVersion = routePathname !== "/whats";
   const formPage = pmax ? routePathname === "/pmax/formulario" : routePathname === "/formulario/etapas";
   const thankYouPage = pmax ? routePathname === "/pmax/obrigado" : routePathname === "/obrigado";
-  const formPageHref = pmax ? "/pmax/formulario" : `${abVariant ? "/ab" : ""}/formulario/etapas`;
+  const formPageBaseHref = pmax ? "/pmax/formulario" : `${abVariant ? "/ab" : ""}/formulario/etapas`;
+  const formTrackingParams = new URLSearchParams();
+  LINK_TRACKING_PARAM_KEYS.forEach((key) => {
+    const value = searchParams?.get(key);
+    if (value) formTrackingParams.set(key, value);
+  });
+  const formTrackingQuery = formTrackingParams.toString();
+  const formPageHref = `${formPageBaseHref}${formTrackingQuery ? `?${formTrackingQuery}` : ""}`;
+  const formPageHrefWithOffer = (offerName: string) =>
+    `${formPageHref}${formPageHref.includes("?") ? "&" : "?"}oferta=${encodeURIComponent(offerName)}`;
   const conversionHref = formVersion ? formPageHref : whatsappHref(region);
   const conversionLabel = formVersion ? "Encontrar o colchão ideal" : "Falar no WhatsApp";
   const [introPhase, setIntroPhase] = useState<
@@ -1397,7 +1415,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
                     </div>
                     <a
                       className="lp-primary-button circle-hover"
-                      href={formVersion ? `${formPageHref}?oferta=${encodeURIComponent(offer.name)}` : whatsappHref(region, offer.message)}
+                      href={formVersion ? formPageHrefWithOffer(offer.name) : whatsappHref(region, offer.message)}
                       target={formVersion ? undefined : "_blank"}
                       rel={formVersion ? undefined : "noreferrer"}
                     >
