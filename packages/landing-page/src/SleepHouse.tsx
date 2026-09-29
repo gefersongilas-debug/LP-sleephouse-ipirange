@@ -384,15 +384,10 @@ function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: {
     });
 
     try {
-      const requests = [
-        fetch(FORM_WEBHOOK, { method: "POST", mode: "no-cors", body }),
-      ];
+      const isPmaxIpiranga = (tracking.utm_campaign || "").toLowerCase() === "pmax_ipiranga";
+      const targetWebhook = isPmaxIpiranga ? PMAX_FORM_WEBHOOK : FORM_WEBHOOK;
 
-      if ((tracking.utm_campaign || "").toLowerCase() === "pmax_ipiranga") {
-        requests.push(fetch(PMAX_FORM_WEBHOOK, { method: "POST", mode: "no-cors", body }));
-      }
-
-      await Promise.all(requests);
+      await fetch(targetWebhook, { method: "POST", mode: "no-cors", body });
       (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
         event: "lead_form_submit",
         region: region.key,
