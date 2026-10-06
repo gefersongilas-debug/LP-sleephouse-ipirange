@@ -17,7 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { COMPANY_LEGAL, type SleepHouseRegion } from "./SleepHouse";
+import { COMPANY_LEGAL, companyPhone, type SleepHouseRegion } from "./SleepHouse";
 import { captureTrackingParams } from "./tracking";
 
 const TEMPUR_FORM_WEBHOOK = "https://hook.us1.make.celonis.com/0f3y9xvvji46epnlrhe1yc47gh4jqa39";
@@ -990,7 +990,7 @@ export default function TempurPage({ region }: { region: SleepHouseRegion }) {
               {COMPANY_LEGAL.legalName}
               <br />
               CNPJ {COMPANY_LEGAL.cnpj} · {COMPANY_LEGAL.city}, {COMPANY_LEGAL.country} ·{" "}
-              <a href={COMPANY_LEGAL.phoneHref}>{COMPANY_LEGAL.phone}</a>
+              <a href={companyPhone(region).href}>{companyPhone(region).label}</a>
             </p>
           </div>
           <span>TEMPUR® é uma marca de seus respectivos proprietários.</span>
