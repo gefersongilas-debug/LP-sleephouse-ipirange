@@ -68,8 +68,16 @@ export const COMPANY_LEGAL = {
   cnpj: "24.763.942/0001-90",
   city: "São Paulo",
   country: "Brasil",
-  phone: "+55 (14) 99909-8555",
-  phoneHref: "tel:+5514999098555",
+};
+
+// Telefone comercial do rodapé: usa o WhatsApp da própria unidade (ex.: 5511955030521 → +55 (11) 95503-0521).
+export const companyPhone = (region: SleepHouseRegion) => {
+  const digits = region.whatsapp.replace(/\D/g, "");
+  const local = digits.slice(4);
+  return {
+    label: `+${digits.slice(0, 2)} (${digits.slice(2, 4)}) ${local.slice(0, -4)}-${local.slice(-4)}`,
+    href: `tel:+${digits}`,
+  };
 };
 
 type Region = SleepHouseRegion;
@@ -1622,7 +1630,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
                 {COMPANY_LEGAL.legalName}
                 <br />
                 CNPJ {COMPANY_LEGAL.cnpj} · {COMPANY_LEGAL.city}, {COMPANY_LEGAL.country} ·{" "}
-                <a href={COMPANY_LEGAL.phoneHref}>{COMPANY_LEGAL.phone}</a>
+                <a href={companyPhone(region).href}>{companyPhone(region).label}</a>
               </p>
             </div>
             <span className="footer-legal-note">
