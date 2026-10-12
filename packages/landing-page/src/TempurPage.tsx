@@ -262,6 +262,52 @@ function TempurButton({
   );
 }
 
+// Reutiliza as classes e o visual do seletor de lojas da página principal.
+// Assim, somente este arquivo precisa ser atualizado para adicionar o popup à /tempur.
+const TempurWhatsAppIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.82L2 22l5.44-1.35c1.38.72 2.94 1.14 4.6 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.9 14.02c-.25.7-1.45 1.34-1.99 1.42-.51.08-1.15.11-1.86-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.93-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.4.27-.28.58-.35.78-.35.2 0 .39.002.56.01.18.008.42-.07.66.5.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.44.54-.15.15-.3.32-.13.62.17.3.78 1.3 1.68 2.1 1.16 1.03 2.13 1.36 2.44 1.51.31.15.49.13.68-.07.19-.2.79-.9.99-1.21.2-.31.4-.26.66-.16.27.1 1.7.8 1.99.94.29.15.48.22.55.35.07.13.07.72-.18 1.41Z" />
+  </svg>
+);
+
+function TempurWhatsAppLocationSelector({ region }: { region: SleepHouseRegion }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const locations = region.whatsappLocations ?? [{ label: region.label, phone: region.whatsapp }];
+  const optionsId = "tempur-whatsapp-location-options-floating";
+
+  return (
+    <div className="whatsapp-location-selector whatsapp-location-selector--floating">
+      {isOpen ? (
+        <div className="whatsapp-location-options" id={optionsId} role="dialog" aria-label="Escolha a loja para falar no WhatsApp">
+          <p>Com qual loja você quer falar?</p>
+          {locations.map((location) => (
+            <a
+              data-whatsapp-location={location.label}
+              href={`https://wa.me/${location.phone}?text=${encodeURIComponent(`Olá! Quero saber mais sobre a linha Tempur e falar com um especialista da Sleep House ${location.label}.`)}`}
+              key={location.label}
+              onClick={() => track({ event: "whatsapp_click", cta_location: "floating", whatsapp_location: location.label })}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <span className="whatsapp-location-label">{location.label}<TempurWhatsAppIcon /></span>
+            </a>
+          ))}
+        </div>
+      ) : null}
+      <button
+        aria-controls={optionsId}
+        aria-expanded={isOpen}
+        aria-label="Escolher loja para falar no WhatsApp"
+        className="whatsapp-location-trigger"
+        onClick={() => setIsOpen((current) => !current)}
+        type="button"
+      >
+        <TempurWhatsAppIcon />
+      </button>
+    </div>
+  );
+}
+
 function LeadForm({ region }: { region: SleepHouseRegion }) {
   const [tracking] = useState(() => captureTrackingParams());
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -997,7 +1043,9 @@ export default function TempurPage({ region }: { region: SleepHouseRegion }) {
         </div>
       </footer>
 
-      <TempurButton className="tempur-floating-cta" label="Falar no WhatsApp" location="floating" region={region} />
+      <div className="floating-actions">
+        <TempurWhatsAppLocationSelector region={region} />
+      </div>
       <div aria-hidden="true" className="custom-cursor tempur-custom-cursor">
         <span className="custom-cursor-dot" ref={cursorDotRef} />
         <span className="custom-cursor-ring" ref={cursorRingRef} />
