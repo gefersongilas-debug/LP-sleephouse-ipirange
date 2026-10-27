@@ -1,0 +1,7 @@
+/* Cursor dourado exclusivo da Black dos Sonhos. */
+@media (hover: hover) and (pointer: fine) {
+  html .bf-page,
+  html .bf-page * {
+    cursor: none !important;
+  }
+}

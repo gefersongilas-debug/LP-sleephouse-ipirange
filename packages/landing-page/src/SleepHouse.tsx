@@ -461,6 +461,7 @@ function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: {
 function FormPage({
   region,
   offer,
+  blackFriday = false,
   pmax = false,
   abVariant = false,
   cursorDotRef,
@@ -468,13 +469,14 @@ function FormPage({
 }: {
   region: Region;
   offer?: string;
+  blackFriday?: boolean;
   pmax?: boolean;
   abVariant?: boolean;
   cursorDotRef: React.RefObject<HTMLSpanElement | null>;
   cursorRingRef: React.RefObject<HTMLSpanElement | null>;
 }) {
   return (
-    <main className="form-page brown-section">
+    <main className={`form-page brown-section${blackFriday ? " form-page--black-friday" : ""}`}>
       <a className="form-page-logo" href={pmax ? "/pmax" : abVariant ? "/ab" : "/"} aria-label={`Voltar para Sleep House ${region.label}`}><img src="/brand/sleep-house/logo.svg" alt="Sleep House" /></a>
       <div className="form-page-content">
         <p className="eyebrow">Sleep House {region.label}</p>
@@ -568,6 +570,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
   const routePathname = abVariant ? pathname.slice(3) || "/" : pathname;
   const searchParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
   const selectedOffer = searchParams?.get("oferta") ?? undefined;
+  const blackFridayForm = searchParams?.get("black_friday") === "1";
   const formVersion = routePathname !== "/whats";
   const formPage = pmax ? routePathname === "/pmax/formulario" : routePathname === "/formulario/etapas";
   const thankYouPage = pmax ? routePathname === "/pmax/obrigado" : routePathname === "/obrigado";
@@ -1118,7 +1121,7 @@ export default function SleepHouse({ region, pmax = false }: { region: SleepHous
   }, []);
 
   if (thankYouPage) return <ThankYouPage abVariant={abVariant} cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} pmax={pmax} region={region} />;
-  if (formPage) return <FormPage abVariant={abVariant} cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} offer={selectedOffer} pmax={pmax} region={region} />;
+  if (formPage) return <FormPage abVariant={abVariant} blackFriday={blackFridayForm} cursorDotRef={cursorDotRef} cursorRingRef={cursorRingRef} offer={selectedOffer} pmax={pmax} region={region} />;
 
   return (
     <>
