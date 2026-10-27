@@ -4,6 +4,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/black-friday", "destination": "/index.html" },
+    { "source": "/black-friday/", "destination": "/index.html" },
+    { "source": "/black-friday-whatsapp", "destination": "/index.html" },
+    { "source": "/black-friday-whatsapp/", "destination": "/index.html" },
     { "source": "/tempur", "destination": "/index.html" },
     { "source": "/pmax", "destination": "/index.html" },
     { "source": "/pmax/(.*)", "destination": "/index.html" },

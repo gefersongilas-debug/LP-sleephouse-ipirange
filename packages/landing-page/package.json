@@ -7,6 +7,7 @@
     ".": "./src/SleepHouse.tsx",
     "./tempur": "./src/TempurPage.tsx",
     "./pmax": "./src/PmaxPage.tsx",
+    "./black-friday": "./src/BlackFridayPage.tsx",
     "./styles.css": "./src/globals.css"
   },
   "dependencies": {
