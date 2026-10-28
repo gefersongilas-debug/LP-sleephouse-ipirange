@@ -36,6 +36,7 @@ const MOTION = {
 
 const FORM_WEBHOOK = "https://hook.us1.make.celonis.com/unxj1qznxqbeaseq1ms9rb4zxnp2u4vd";
 const PMAX_FORM_WEBHOOK = "https://hook.us1.make.celonis.com/6u9g4xdmwxyo6vigqqb5ivc5q72y07ru";
+const BLACK_FRIDAY_IPIRANGA_FORM_WEBHOOK = "https://hook.us1.make.celonis.com/7lw6gkac7q9ris7szkieijonnvom9v5w";
 const LINK_TRACKING_PARAM_KEYS = [
   "utm_source",
   "utm_medium",
@@ -356,7 +357,7 @@ function WhatsAppLocationSelector({ region, variant }: { region: Region; variant
   );
 }
 
-function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: { region: Region; offer?: string; pmax?: boolean; abVariant?: boolean }) {
+function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false, blackFriday = false }: { region: Region; offer?: string; pmax?: boolean; abVariant?: boolean; blackFriday?: boolean }) {
   const [tracking] = useState(() => captureTrackingParams());
   const [answers, setAnswers] = useState<Record<string, string>>(offer ? { oferta: offer } : {});
   const [step, setStep] = useState(0);
@@ -393,7 +394,8 @@ function MultiStepLeadForm({ region, offer, pmax = false, abVariant = false }: {
 
     try {
       const isPmaxIpiranga = (tracking.utm_campaign || "").toLowerCase() === "pmax_ipiranga";
-      const targetWebhook = isPmaxIpiranga ? PMAX_FORM_WEBHOOK : FORM_WEBHOOK;
+      // A Black Friday da Ipiranga sempre usa o webhook exclusivo, sem a regra condicional de PMax.
+      const targetWebhook = blackFriday ? BLACK_FRIDAY_IPIRANGA_FORM_WEBHOOK : isPmaxIpiranga ? PMAX_FORM_WEBHOOK : FORM_WEBHOOK;
 
       await fetch(targetWebhook, { method: "POST", mode: "no-cors", body });
       (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push({
@@ -482,7 +484,7 @@ function FormPage({
         <p className="eyebrow">Sleep House {region.label}</p>
         <h1>Vamos encontrar o colchão ideal para você.</h1>
         <p>{offer ? <>Você selecionou <strong>{offer}</strong>. Responda às perguntas para receber um atendimento personalizado.</> : "Leva menos de um minuto. Ao final, um consultor entra em contato."}</p>
-        <MultiStepLeadForm abVariant={abVariant} offer={offer} pmax={pmax} region={region} />
+        <MultiStepLeadForm abVariant={abVariant} blackFriday={blackFriday} offer={offer} pmax={pmax} region={region} />
       </div>
       {!pmax && !abVariant ? <WhatsAppLocationSelector region={region} variant="form" /> : null}
       <div className="custom-cursor" aria-hidden="true">
